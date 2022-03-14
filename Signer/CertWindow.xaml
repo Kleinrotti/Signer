@@ -1,0 +1,25 @@
+﻿<Window x:Class="Signer.CertWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
+        Title="" Height="220" Width="280">
+    <Grid>
+        <StackPanel Margin="0,20,0,0" Width="180">
+            <StackPanel Margin="0,0,0,10">
+                <TextBlock Name="textBlockCertificate" Text="Select Certificate" HorizontalAlignment="Center" />
+                <Button Name="buttonSelect" Content="Select" Click="buttonSelect_Click" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Passphrase" HorizontalAlignment="Center" />
+                <PasswordBox Name="passwordBoxPassphrase" />
+            </StackPanel>
+            <StackPanel Margin="0,20,0,0">
+                <Button Name="buttonApply" Content="Sign" Click="buttonApply_Click" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
