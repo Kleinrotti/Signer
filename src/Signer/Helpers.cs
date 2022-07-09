@@ -39,17 +39,30 @@ namespace Signer
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
-                    var obj = new FileObject
-                    {
-                        Name = Path.GetFileName(file),
-                        Path = Path.GetDirectoryName(file)
-                    };
-                    obj.Signed = Signed(file, ref obj);
-                    fileObjects.Add(obj);
+                    fileObjects.Add(InspectFile(file));
                 });
             });
             await task;
             return fileObjects.ToList();
+        }
+
+        internal static async Task<FileObject> ScanFile(string file)
+        {
+            return await Task.Run(() =>
+            {
+                return InspectFile(file);
+            });
+        }
+
+        private static FileObject InspectFile(string file)
+        {
+            var obj = new FileObject
+            {
+                Name = Path.GetFileName(file),
+                Path = Path.GetDirectoryName(file)
+            };
+            obj.Signed = Signed(file, ref obj);
+            return obj;
         }
 
         private static bool Signed(string path, ref FileObject fileObject)

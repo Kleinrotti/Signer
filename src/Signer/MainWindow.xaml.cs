@@ -31,17 +31,11 @@ namespace Signer
                 return;
             var folder = dialog.SelectedPath;
             FileModel.Files = new List<FileObject>();
-            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            buttonSelectFolder.Visibility = Visibility.Collapsed;
-            buttonStartSign.Visibility = Visibility.Collapsed;
-            checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
-            buttonCancel.Visibility = Visibility.Visible;
-            progressBarSigned.Value = 0;
-            progressBarSigned.Visibility = Visibility.Visible;
             var po = new ParallelOptions();
             tokenSource = new CancellationTokenSource();
             po.CancellationToken = tokenSource.Token;
             var t = new List<FileObject>();
+            changeToProgressUI();
             try
             {
                 t = await Helpers.ScanDirectory(folder, po, progressBarSigned);
@@ -64,18 +58,35 @@ namespace Signer
                     checkBoxIncludeSigned.Visibility = Visibility.Hidden;
                     listViewItems.IsEnabled = false;
                 }
-                buttonCancel.Visibility = Visibility.Collapsed;
-                buttonSelectFolder.Visibility = Visibility.Visible;
-                progressBarSigned.Visibility = Visibility.Hidden;
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
+                changeToScanFinishedUI();
                 tokenSource.Dispose();
             };
             FileModel.Files = t;
         }
 
+        private async void buttonSelectFile_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Title = "Select a file to sign.",
+                Filter = "Script files (*.bat;*.ps1)|*.bat;*.ps1|Binary files (*.exe;*.dll)|*.exe;*.dll"
+            };
+            if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+            var file = openFileDialog.FileName;
+            changeToProgressUI();
+            var f = await Helpers.ScanFile(file);
+            FileModel.Files = new List<FileObject> { f };
+            changeToScanFinishedUI();
+            buttonStartSign.Visibility = Visibility.Visible;
+            checkBoxIncludeSigned.Visibility = Visibility.Visible;
+            listViewItems.IsEnabled = true;
+        }
+
         private void buttonCancel_Click(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();
+            progressBarSigned.Value = 0;
         }
 
         private void buttonStartSign_Click(object sender, RoutedEventArgs e)
@@ -90,13 +101,7 @@ namespace Signer
             var po = new ParallelOptions();
             tokenSource = new CancellationTokenSource();
             po.CancellationToken = tokenSource.Token;
-            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            progressBarSigned.Value = 0;
-            progressBarSigned.Visibility = Visibility.Visible;
-            buttonSelectFolder.Visibility = Visibility.Collapsed;
-            buttonStartSign.Visibility = Visibility.Collapsed;
-            checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
-            buttonCancel.Visibility = Visibility.Visible;
+            changeToProgressUI();
             try
             {
                 await Helpers.Sign(path, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
@@ -111,11 +116,32 @@ namespace Signer
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
                 progressBarSigned.Visibility = Visibility.Hidden;
                 buttonCancel.Visibility = Visibility.Collapsed;
-                buttonSelectFolder.Visibility = Visibility.Visible;
-                checkBoxIncludeSigned.Visibility = Visibility.Visible;
-                buttonStartSign.Visibility = Visibility.Visible;
+                wrapPanelSelect.Visibility = Visibility.Visible;
+                checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
+                buttonStartSign.Visibility = Visibility.Collapsed;
                 tokenSource.Dispose();
+                FileModel.Files = new List<FileObject>();
+                progressBarSigned.Value = 0;
             }
+        }
+
+        private void changeToProgressUI()
+        {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+            wrapPanelSelect.Visibility = Visibility.Collapsed;
+            buttonStartSign.Visibility = Visibility.Collapsed;
+            checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
+            buttonCancel.Visibility = Visibility.Visible;
+            progressBarSigned.Value = 0;
+            progressBarSigned.Visibility = Visibility.Visible;
+        }
+
+        private void changeToScanFinishedUI()
+        {
+            buttonCancel.Visibility = Visibility.Collapsed;
+            wrapPanelSelect.Visibility = Visibility.Visible;
+            progressBarSigned.Visibility = Visibility.Hidden;
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
         }
     }
 }

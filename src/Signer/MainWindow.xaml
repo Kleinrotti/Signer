@@ -35,7 +35,10 @@
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <Button Name="buttonSelectFolder" Content="Select folder" Height="40" Click="buttonSelectFolder_Click" />
+            <WrapPanel Name="wrapPanelSelect">
+                <Button Name="buttonSelectFolder" Content="Select folder" Height="40" Width="223" Click="buttonSelectFolder_Click" />
+                <Button Name="buttonSelectFile" Content="Select file" Height="40" Width="222" Click="buttonSelectFile_Click" />
+            </WrapPanel>
             <Button Name="buttonStartSign" Content="Sign files" Height="40" Click="buttonStartSign_Click" Visibility="Hidden" />
             <CheckBox Name="checkBoxIncludeSigned" Content="Sign already signed files too." Visibility="Hidden" />
             <Button x:Name="buttonCancel" Content="Cancel" Height="40" Click="buttonCancel_Click" Visibility="Hidden" />
