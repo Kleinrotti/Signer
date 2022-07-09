@@ -9,12 +9,24 @@
         Title="Signer" Height="560" Width="520">
     <Grid Height="Auto" Width="Auto">
         <Grid.RowDefinitions>
-            <RowDefinition Height="70" />
-            <RowDefinition Height="435" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="460" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Text="Sign binaries and scripts" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" />
-        <StackPanel Name="panelMain" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+        <Menu Grid.Row="0">
+            <MenuItem Header="_Settings">
+                <MenuItem Header="_Timestampserver" Click="MenuItemTimestamp_Click"/>
+                <MenuItem Header="_Certstore">
+                    <RadioButton Content="User" GroupName="test" IsChecked="True" Click="RadioButtonUser_Click"/>
+                    <RadioButton Content="Computer" GroupName="test" Click="RadioButtonComputer_Click_1" />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Exit" Click="MenuItemExit_Click"/>
+            </MenuItem>
+        </Menu>
+        <TextBlock Text="Sign binaries and scripts" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" />
+        <StackPanel Name="panelMain" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
             <ListView Name="listViewItems" ItemsSource="{Binding Files}" Width="445" Height="300" VerticalAlignment="Center" IsEnabled="False">
                 <ListView.View>
                     <GridView AllowsColumnReorder="true">
@@ -43,7 +55,7 @@
             <CheckBox Name="checkBoxIncludeSigned" Content="Sign already signed files too." Visibility="Hidden" />
             <Button x:Name="buttonCancel" Content="Cancel" Height="40" Click="buttonCancel_Click" Visibility="Hidden" />
         </StackPanel>
-        <StackPanel Grid.Row="2">
+        <StackPanel Grid.Row="3">
             <Grid>
                 <ProgressBar Minimum="0"
                 Maximum="100"

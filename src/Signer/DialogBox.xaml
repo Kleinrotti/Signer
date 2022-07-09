@@ -1,0 +1,21 @@
+﻿<Window x:Class="Signer.DialogBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
+        Title="" Height="140" Width="200">
+    <StackPanel Width="180">
+        <Border BorderThickness="2">
+            <TextBlock Name="textBlockTitle" Text="" />
+        </Border>
+        <Border BorderThickness="10">
+            <TextBox x:Name="ResponseTextBox" />
+        </Border>
+        <Border BorderThickness="20">
+            <Button Content="OK" Click="OKButton_Click" />
+        </Border>
+    </StackPanel>
+</Window>

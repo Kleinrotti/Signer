@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +16,7 @@ namespace Signer
     {
         internal FileModel FileModel { get; set; }
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private StoreLocation _storeLocation = StoreLocation.CurrentUser;
 
         public MainWindow()
         {
@@ -92,7 +94,7 @@ namespace Signer
 
         private void buttonStartSign_Click(object sender, RoutedEventArgs e)
         {
-            var certWindow = new CertWindow(Sign);
+            var certWindow = new CertWindow(Sign, _storeLocation);
             certWindow.Owner = this;
             certWindow.ShowDialog();
         }
@@ -146,6 +148,31 @@ namespace Signer
             wrapPanelSelect.Visibility = Visibility.Visible;
             progressBarSigned.Visibility = Visibility.Hidden;
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
+        }
+
+        private void MenuItemExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void RadioButtonUser_Click(object sender, RoutedEventArgs e)
+        {
+            _storeLocation = StoreLocation.CurrentUser;
+        }
+
+        private void RadioButtonComputer_Click_1(object sender, RoutedEventArgs e)
+        {
+            _storeLocation = StoreLocation.LocalMachine;
+        }
+
+        private void MenuItemTimestamp_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new DialogBox("Timestamp server to use");
+            dialog.ResponseText = Helpers.TimestampUrl;
+            if (dialog.ShowDialog() == true)
+            {
+                Helpers.TimestampUrl = dialog.ResponseText;
+            }
         }
     }
 }

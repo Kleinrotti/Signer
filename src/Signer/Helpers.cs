@@ -12,7 +12,7 @@ namespace Signer
 {
     internal static class Helpers
     {
-        private static readonly string _timestampUrl = "http://timestamp.digicert.com";
+        public static string TimestampUrl { get; set; } = "http://timestamp.digicert.com";
 
         internal static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, ProgressBar progressBar)
         {
@@ -97,7 +97,7 @@ namespace Signer
                         progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                         return;
                     }
-                    SignTool.SignWithCert(file.FullPath, certPath, passphrase, _timestampUrl);
+                    SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl);
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                 });
             });
@@ -115,7 +115,7 @@ namespace Signer
                         progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                         return;
                     }
-                    SignTool.SignWithThumbprint(file.FullPath, thumbprint, _timestampUrl);
+                    SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl);
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                 });
             });

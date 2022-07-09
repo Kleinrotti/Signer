@@ -15,11 +15,13 @@ namespace Signer
         private Action<string, bool, string> _callback;
         private string _certificate;
         private bool _useThumbprint;
+        private StoreLocation _store;
 
-        public CertWindow(Action<string, bool, string> callback)
+        public CertWindow(Action<string, bool, string> callback, StoreLocation storeLocation)
         {
             InitializeComponent();
             _callback = callback;
+            _store = storeLocation;
         }
 
         private void buttonSelect_Click(object sender, RoutedEventArgs e)
@@ -45,7 +47,7 @@ namespace Signer
         private void buttonSelectFromStore_Click(object sender, RoutedEventArgs e)
         {
             var t = Helpers.SelectCertFromStore(StoreName.My,
-                StoreLocation.CurrentUser, "Select certificate", "");
+                _store, "Select certificate", "");
 
             if (t == null)
                 return;
