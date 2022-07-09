@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Title="" Height="140" Width="200">
     <StackPanel Width="180">

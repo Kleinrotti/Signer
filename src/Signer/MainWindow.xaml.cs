@@ -71,7 +71,7 @@ namespace Signer
             var openFileDialog = new OpenFileDialog
             {
                 Title = "Select a file to sign.",
-                Filter = "Script files (*.bat;*.ps1)|*.bat;*.ps1|Binary files (*.exe;*.dll)|*.exe;*.dll"
+                Filter = "Script (*.bat;*.ps1)|*.bat;*.ps1|Binary files (*.exe;*.dll;*.appx)|*.exe;*.dll;*.appx|Archive (*.cab)|*.cab|Catalog (*.cat)|*.cat|All (*.*)|*.*"
             };
             if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
@@ -119,10 +119,7 @@ namespace Signer
             }
             finally
             {
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
-                progressBarSigned.Visibility = Visibility.Hidden;
-                buttonCancel.Visibility = Visibility.Collapsed;
-                wrapPanelSelect.Visibility = Visibility.Visible;
+                changeToScanFinishedUI();
                 checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
                 buttonStartSign.Visibility = Visibility.Collapsed;
                 tokenSource.Dispose();
@@ -168,6 +165,7 @@ namespace Signer
         private void MenuItemTimestamp_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new DialogBox("Timestamp server to use");
+            dialog.Owner = this;
             dialog.ResponseText = Helpers.TimestampUrl;
             if (dialog.ShowDialog() == true)
             {
