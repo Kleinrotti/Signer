@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Title="" Height="260" Width="390">
     <Grid Height="200" Width="350">

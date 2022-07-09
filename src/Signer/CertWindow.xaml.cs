@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Signer
 {
@@ -13,7 +14,6 @@ namespace Signer
     {
         private Action<string, bool, string> _callback;
         private string _certificate;
-
         private bool _useThumbprint;
 
         public CertWindow(Action<string, bool, string> callback)
@@ -35,6 +35,8 @@ namespace Signer
                 textBlockCertificate.Text = Path.GetFileName(dialog.FileName);
                 _certificate = dialog.FileName;
                 stackPanelPassphrase.Visibility = Visibility.Visible;
+                textBlockCertificateStore.Foreground = Brushes.Black;
+                textBlockCertificate.Foreground = Brushes.Green;
                 _useThumbprint = false;
                 buttonApply.IsEnabled = true;
             }
@@ -49,6 +51,8 @@ namespace Signer
                 return;
             textBlockCertificateStore.Text = t.Subject;
             stackPanelPassphrase.Visibility = Visibility.Hidden;
+            textBlockCertificateStore.Foreground = Brushes.Green;
+            textBlockCertificate.Foreground = Brushes.Black;
             buttonApply.IsEnabled = true;
             _useThumbprint = true;
             _certificate = t.Thumbprint;
