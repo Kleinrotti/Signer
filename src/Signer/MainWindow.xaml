@@ -13,7 +13,7 @@
             <RowDefinition Height="435" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <TextBlock Text="Sign applications and libraries." FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" />
+        <TextBlock Text="Sign binaries and scripts" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" />
         <StackPanel Name="panelMain" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <ListView Name="listViewItems" ItemsSource="{Binding Files}" Width="445" Height="300" VerticalAlignment="Center" IsEnabled="False">
                 <ListView.View>
