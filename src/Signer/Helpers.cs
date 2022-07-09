@@ -82,7 +82,7 @@ namespace Signer
                 return false;
         }
 
-        internal static async Task Sign(string certPath, string passphrase, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
             var collection = new X509Certificate2Collection();
 
@@ -102,6 +102,45 @@ namespace Signer
                 });
             });
             await task;
+        }
+
+        internal static async Task SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
+        {
+            var task = Task.Run(() =>
+            {
+                Parallel.ForEach(files, parallelOptions, file =>
+                {
+                    if (includeSigned == false && file.Signed == true)
+                    {
+                        progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
+                        return;
+                    }
+                    SignTool.SignWithThumbprint(file.FullPath, thumbprint, _timestampUrl);
+                    progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
+                });
+            });
+            await task;
+        }
+
+        internal static X509Certificate2 SelectCertFromStore(StoreName store, StoreLocation location, string windowTitle, string windowMsg)
+        {
+            X509Certificate2 certSelected = null;
+            X509Store x509Store = new X509Store(store, location);
+            x509Store.Open(OpenFlags.ReadOnly);
+
+            X509Certificate2Collection col = x509Store.Certificates;
+            X509Certificate2Collection sel = X509Certificate2UI.SelectFromCollection(col, windowTitle, windowMsg, X509SelectionFlag.SingleSelection);
+
+            if (sel.Count > 0)
+            {
+                X509Certificate2Enumerator en = sel.GetEnumerator();
+                en.MoveNext();
+                certSelected = en.Current;
+            }
+
+            x509Store.Close();
+
+            return certSelected;
         }
     }
 }

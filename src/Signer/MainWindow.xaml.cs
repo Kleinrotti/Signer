@@ -96,7 +96,7 @@ namespace Signer
             certWindow.ShowDialog();
         }
 
-        private async void Sign(string path, string passphrase)
+        private async void Sign(string certificate, bool useThumbprint, string passphrase)
         {
             var po = new ParallelOptions();
             tokenSource = new CancellationTokenSource();
@@ -104,7 +104,10 @@ namespace Signer
             changeToProgressUI();
             try
             {
-                await Helpers.Sign(path, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
+                if (useThumbprint)
+                    await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
+                else
+                    await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
                 System.Windows.MessageBox.Show($"Finished {FileModel.Files.Count} files.");
             }
             catch (Exception ex)

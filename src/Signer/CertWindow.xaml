@@ -6,20 +6,37 @@
         mc:Ignorable="d"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterOwner"
-        Title="" Height="220" Width="280">
-    <Grid>
-        <StackPanel Margin="0,20,0,0" Width="180">
-            <StackPanel Margin="0,0,0,10">
-                <TextBlock Name="textBlockCertificate" Text="Select Certificate" HorizontalAlignment="Center" />
-                <Button Name="buttonSelect" Content="Select" Click="buttonSelect_Click" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Passphrase" HorizontalAlignment="Center" />
-                <PasswordBox Name="passwordBoxPassphrase" />
-            </StackPanel>
-            <StackPanel Margin="0,20,0,0">
-                <Button Name="buttonApply" Content="Sign" Click="buttonApply_Click" />
-            </StackPanel>
+        Title="" Height="260" Width="390">
+    <Grid Height="200" Width="350">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border BorderThickness="2" Grid.Column="0">
+                <StackPanel Name="stackPanelCertificateFile">
+                    <TextBlock Name="textBlockCertificate" Text="Select Certificate file" HorizontalAlignment="Center" />
+                    <Button Name="buttonSelect" Content="Select" Click="buttonSelect_Click" />
+                </StackPanel>
+            </Border>
+            <Border BorderThickness="2" Grid.Column="1">
+                <StackPanel Name="stackPanelCertificateStore">
+                    <TextBlock Name="textBlockCertificateStore" Text="Select Certificate store" HorizontalAlignment="Center" />
+                    <Button Name="buttonSelectFromStore" Content="Select" Click="buttonSelectFromStore_Click" />
+                </StackPanel>
+            </Border>
+        </Grid>
+        <StackPanel Name="stackPanelPassphrase" Visibility="Hidden" Width="140" Grid.Row="1" Margin="0,30,0,0">
+            <TextBlock Name="textBlockPassphrase" Text="Passphrase" HorizontalAlignment="Center" />
+            <PasswordBox Name="passwordBoxPassphrase" />
+        </StackPanel>
+        <StackPanel VerticalAlignment="Bottom" Grid.Row="2">
+            <Button Name="buttonApply" Content="Sign" Click="buttonApply_Click" Width="150" Height="30" IsEnabled="False" />
         </StackPanel>
     </Grid>
 </Window>
