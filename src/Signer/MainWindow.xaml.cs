@@ -77,6 +77,7 @@ namespace Signer
             changeToProgressUI();
             var f = await Helpers.ScanFile(file);
             FileModel.Files = new List<FileObject> { f };
+            progressBarSigned.Value = 1;
             changeToScanFinishedUI();
             buttonStartSign.Visibility = Visibility.Visible;
             checkBoxIncludeSigned.Visibility = Visibility.Visible;
