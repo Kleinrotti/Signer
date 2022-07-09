@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Signer
@@ -11,10 +7,10 @@ namespace Signer
     {
         #region Fields
 
-        readonly Action<T> _execute = null;
-        readonly Predicate<T> _canExecute = null;
+        private readonly Action<T> _execute = null;
+        private readonly Predicate<T> _canExecute = null;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -42,7 +38,7 @@ namespace Signer
             _canExecute = canExecute;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region ICommand Members
 
@@ -76,6 +72,6 @@ namespace Signer
             _execute((T)parameter);
         }
 
-        #endregion
+        #endregion ICommand Members
     }
 }

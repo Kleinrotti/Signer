@@ -33,8 +33,6 @@
                             Command="{Binding Info}"
                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}" />
                     </ContextMenu>
-                    
-                   
                 </ListView.ContextMenu>
             </ListView>
             <Button Name="buttonSelectFolder" Content="Select folder" Height="40" Click="buttonSelectFolder_Click" />
@@ -44,16 +42,15 @@
         </StackPanel>
         <StackPanel Grid.Row="2">
             <Grid>
-                <ProgressBar Minimum="0" 
-                Maximum="100" 
+                <ProgressBar Minimum="0"
+                Maximum="100"
                 Value="{Binding InsertBindingHere}"
                 Visibility="Hidden"
                 Name="progressBarSigned" />
-                <TextBlock Text="{Binding ElementName=progressBarSigned, Path=Value, StringFormat={}{0:0} files}" 
-           HorizontalAlignment="Center" 
+                <TextBlock Text="{Binding ElementName=progressBarSigned, Path=Value, StringFormat={}{0:0} files}"
+           HorizontalAlignment="Center"
            VerticalAlignment="Center" />
             </Grid>
-            <ProgressBar Name="progressBarSigned2" Minimum="0" Height="18" Width="180" Margin="0,-10,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="Hidden" />
         </StackPanel>
     </Grid>
 </Window>

@@ -1,6 +1,4 @@
-﻿using AuthenticodeExaminer;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -10,7 +8,7 @@ namespace Signer
 {
     internal class FileModel : INotifyPropertyChanged
     {
-        public List<FileObject> _files { get; set; } = new List<FileObject>();
+        internal List<FileObject> _files { get; set; } = new List<FileObject>();
 
         private ICommand _removeItem;
         private ICommand _info;
@@ -27,7 +25,7 @@ namespace Signer
 
         public void InfoCommand(FileObject item)
         {
-            if (item == null || item.Signatures ==null)
+            if (item == null || item.Signatures == null)
                 return;
             foreach (var c in item.Signatures)
             {
@@ -62,23 +60,5 @@ namespace Signer
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    internal class FileObject
-    {
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public bool Trusted { get; set; }
-
-        public string FullPath
-        {
-            get
-            {
-                return Path + "\\" + Name;
-            }
-        }
-
-        public bool Signed { get; set; }
-        public IEnumerable<AuthenticodeSignature> Signatures { get; set; }
     }
 }
