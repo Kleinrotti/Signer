@@ -164,8 +164,15 @@ namespace Signer
 
         #region public methods
 
-        // Call SignerSignEx and SignerTimeStampEx for a given .pfx
-        public static void SignWithCert(string appPath, string certPath, string certPassword, string timestampUrl)
+        /// <summary>
+        /// Call SignerSignEx and SignerTimeStampEx for a given .pfx
+        /// </summary>
+        /// <param name="appPath"></param>
+        /// <param name="certPath"></param>
+        /// <param name="certPassword"></param>
+        /// <param name="timestampUrl"></param>
+        /// <exception cref="CryptographicException"></exception>
+        public static void SignWithCert(string appPath, string certPath, string certPassword, string timestampUrl = null)
         {
             IntPtr pSignerCert = IntPtr.Zero;
             IntPtr pSubjectInfo = IntPtr.Zero;
@@ -196,7 +203,6 @@ namespace Signer
             {
                 string exception;
 
-                // do anything with this useful information?
                 switch (Marshal.GetHRForException(ce))
                 {
                     case -2146885623:
@@ -211,11 +217,11 @@ namespace Signer
                         exception = string.Format(@"An error occurred while attempting to load the signing certificate.  {0}", ce.Message);
                         break;
                 }
+                throw new CryptographicException(exception);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // do anything with this useful information?
-                string exception = e.Message;
+                throw;
             }
             finally
             {
@@ -238,8 +244,14 @@ namespace Signer
             }
         }
 
-        // Call SignerSign and SignerTimeStamp for a given thumbprint.
-        public static void SignWithThumbprint(string appPath, string thumbprint, string timestampUrl)
+        /// <summary>
+        /// Call SignerSign and SignerTimeStamp for a given thumbprint.
+        /// </summary>
+        /// <param name="appPath"></param>
+        /// <param name="thumbprint"></param>
+        /// <param name="timestampUrl"></param>
+        /// <exception cref="CryptographicException"></exception>
+        public static void SignWithThumbprint(string appPath, string thumbprint, string timestampUrl = null)
         {
             IntPtr pSignerCert = IntPtr.Zero;
             IntPtr pSubjectInfo = IntPtr.Zero;
@@ -262,13 +274,12 @@ namespace Signer
             }
             catch (CryptographicException ce)
             {
-                // do anything with this useful information?
                 string exception = string.Format(@"An error occurred while attempting to load the signing certificate.  {0}", ce.Message);
+                throw new CryptographicException(exception);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // do anything with this useful information?
-                string exception = e.Message;
+                throw;
             }
             finally
             {
