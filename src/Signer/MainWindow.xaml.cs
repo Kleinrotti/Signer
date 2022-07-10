@@ -157,7 +157,7 @@ namespace Signer
             _storeLocation = StoreLocation.CurrentUser;
         }
 
-        private void RadioButtonComputer_Click_1(object sender, RoutedEventArgs e)
+        private void RadioButtonComputer_Click(object sender, RoutedEventArgs e)
         {
             _storeLocation = StoreLocation.LocalMachine;
         }
@@ -177,6 +177,23 @@ namespace Signer
         {
             var about = new AboutBox();
             about.ShowDialog();
+        }
+
+        private void MenuItemPattern_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new DialogBox("Search pattern for folder search");
+            dialog.Owner = this;
+            string pattern = "";
+            foreach (var item in Helpers.FileSearchPattern)
+            {
+                pattern += item + ",";
+            }
+            dialog.ResponseText = pattern;
+            if (dialog.ShowDialog() == true)
+            {
+                var tmp = dialog.ResponseText.Split(',');
+                Helpers.FileSearchPattern = tmp;
+            }
         }
     }
 }

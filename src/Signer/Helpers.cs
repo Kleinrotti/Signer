@@ -13,7 +13,17 @@ namespace Signer
     internal static class Helpers
     {
         public static string TimestampUrl { get; set; } = "http://timestamp.digicert.com";
-        public static IList<string> FileSearchPattern { get; set; } = new List<string> { "exe", "dll", "bat", "ps1", "cat", "cab" };
+        private static IEnumerable<string> _pattern = new List<string> { "exe", "dll", "bat", "ps1", "cat", "cab" };
+
+        public static IEnumerable<string> FileSearchPattern
+        {
+            get
+            {
+                //filter out empty entries
+                return _pattern.Where(x => !x.Equals(""));
+            }
+            set { _pattern = value; }
+        }
 
         internal static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, ProgressBar progressBar)
         {
