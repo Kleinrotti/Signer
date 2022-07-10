@@ -13,29 +13,24 @@ namespace Signer
     internal static class Helpers
     {
         public static string TimestampUrl { get; set; } = "http://timestamp.digicert.com";
+        public static IList<string> FileSearchPattern { get; set; } = new List<string> { "exe", "dll", "bat", "ps1", "cat", "cab" };
 
         internal static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, ProgressBar progressBar)
         {
             var fileObjects = new ConcurrentBag<FileObject>();
             var task = Task.Run(() =>
             {
-                string[] filesExecutables = null;
-                string[] filesLibraries = null;
+                IEnumerable<string> files = null;
                 try
                 {
-                    filesExecutables = Directory.GetFiles(folder, "*.exe", SearchOption.AllDirectories);
-                    filesLibraries = Directory.GetFiles(folder, "*.dll", SearchOption.AllDirectories);
+                    files = SearchFiles(folder, FileSearchPattern);
                 }
                 catch (UnauthorizedAccessException ex)
                 {
                     System.Windows.MessageBox.Show(ex.Message);
                     return;
                 }
-
-                var files = new List<string>();
-                files.AddRange(filesExecutables);
-                files.AddRange(filesLibraries);
-                progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Maximum = files.Count; }));
+                progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Maximum = files.Count(); }));
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
@@ -63,6 +58,15 @@ namespace Signer
             };
             obj.Signed = Signed(file, ref obj);
             return obj;
+        }
+
+        private static IEnumerable<string> SearchFiles(string path, IEnumerable<string> extensions)
+        {
+            return
+                extensions.Select(x => "*." + x) // turn into globs
+                .SelectMany(x =>
+                    Directory.EnumerateFiles(path, x, SearchOption.AllDirectories)
+                    );
         }
 
         private static bool Signed(string path, ref FileObject fileObject)

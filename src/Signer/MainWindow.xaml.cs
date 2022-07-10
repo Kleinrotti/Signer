@@ -136,7 +136,7 @@ namespace Signer
             checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
             buttonCancel.Visibility = Visibility.Visible;
             progressBarSigned.Value = 0;
-            progressBarSigned.Visibility = Visibility.Visible;
+            gridProgress.Visibility = Visibility.Visible;
         }
 
         private void changeToScanFinishedUI()
