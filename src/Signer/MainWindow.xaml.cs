@@ -71,7 +71,7 @@ namespace Signer
             var openFileDialog = new OpenFileDialog
             {
                 Title = "Select a file to sign.",
-                Filter = "Script (*.bat;*.ps1)|*.bat;*.ps1|Binary files (*.exe;*.dll;*.appx)|*.exe;*.dll;*.appx|Archive (*.cab)|*.cab|Catalog (*.cat)|*.cat|All (*.*)|*.*"
+                Filter = "Script|*.bat;*.ps1|Binary files|*.exe;*.dll;*.appx|Archive|*.cab|Catalog|*.cat|All |*.*"
             };
             if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
@@ -115,7 +115,7 @@ namespace Signer
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message);
+                System.Windows.MessageBox.Show(ex.InnerException.Message);
             }
             finally
             {
@@ -171,6 +171,12 @@ namespace Signer
             {
                 Helpers.TimestampUrl = dialog.ResponseText;
             }
+        }
+
+        private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
+        {
+            var about = new AboutBox();
+            about.ShowDialog();
         }
     }
 }

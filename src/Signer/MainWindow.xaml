@@ -15,6 +15,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit" Click="MenuItemExit_Click"/>
+            </MenuItem>
             <MenuItem Header="_Settings">
                 <MenuItem Header="_Timestampserver" Click="MenuItemTimestamp_Click"/>
                 <MenuItem Header="_Certstore">
@@ -22,8 +25,8 @@
                     <RadioButton Content="Computer" GroupName="test" Click="RadioButtonComputer_Click_1" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Exit" Click="MenuItemExit_Click"/>
             </MenuItem>
+            <MenuItem Header="_About" Click="MenuItemAbout_Click"/>
         </Menu>
         <TextBlock Text="Sign binaries and scripts" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" />
         <StackPanel Name="panelMain" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">

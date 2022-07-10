@@ -97,7 +97,11 @@ namespace Signer
                         progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                         return;
                     }
-                    SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl);
+                    try
+                    {
+                        SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl);
+                    }
+                    catch (Exception) { throw; }
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                 });
             });
@@ -115,7 +119,11 @@ namespace Signer
                         progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                         return;
                     }
-                    SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl);
+                    try
+                    {
+                        SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl);
+                    }
+                    catch (Exception) { throw; }
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                 });
             });
