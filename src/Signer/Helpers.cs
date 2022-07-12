@@ -96,8 +96,9 @@ namespace Signer
                 return false;
         }
 
-        internal static async Task SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task<int> SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
+            int count = 0;
             var collection = new X509Certificate2Collection();
 
             //try to import certificate for verification
@@ -114,16 +115,19 @@ namespace Signer
                     try
                     {
                         SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl);
+                        count++;
                     }
                     catch (Exception) { throw; }
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                 });
             });
             await task;
+            return count;
         }
 
-        internal static async Task SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task<int> SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
+            int count = 0;
             var task = Task.Run(() =>
             {
                 Parallel.ForEach(files, parallelOptions, file =>
@@ -136,12 +140,14 @@ namespace Signer
                     try
                     {
                         SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl);
+                        count++;
                     }
                     catch (Exception) { throw; }
                     progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                 });
             });
             await task;
+            return count;
         }
 
         internal static X509Certificate2 SelectCertFromStore(StoreName store, StoreLocation location, string windowTitle, string windowMsg)

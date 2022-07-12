@@ -105,13 +105,14 @@ namespace Signer
             tokenSource = new CancellationTokenSource();
             po.CancellationToken = tokenSource.Token;
             changeToProgressUI();
+            int count;
             try
             {
                 if (useThumbprint)
-                    await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
+                    count = await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
                 else
-                    await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
-                System.Windows.MessageBox.Show($"Finished {FileModel.Files.Count} files.");
+                    count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
+                System.Windows.MessageBox.Show($"Signed {count} files.");
             }
             catch (Exception ex)
             {
