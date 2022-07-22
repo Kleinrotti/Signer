@@ -96,7 +96,7 @@ namespace Signer
                 return false;
         }
 
-        internal static async Task<int> SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task<int> SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, Hash hash, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
             int count = 0;
             var collection = new X509Certificate2Collection();
@@ -114,7 +114,7 @@ namespace Signer
                     }
                     try
                     {
-                        SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl);
+                        SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl, hash);
                         count++;
                     }
                     catch (Exception) { throw; }
@@ -125,7 +125,7 @@ namespace Signer
             return count;
         }
 
-        internal static async Task<int> SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task<int> SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, Hash hash, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
             int count = 0;
             var task = Task.Run(() =>
@@ -139,7 +139,7 @@ namespace Signer
                     }
                     try
                     {
-                        SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl);
+                        SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl, hash);
                         count++;
                     }
                     catch (Exception) { throw; }

@@ -15,6 +15,7 @@ namespace Signer
     public partial class MainWindow : Window
     {
         internal FileModel FileModel { get; set; }
+        public Hash HashAlgorithm { get; set; } = Hash.SHA1;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private StoreLocation _storeLocation = StoreLocation.CurrentUser;
 
@@ -23,6 +24,7 @@ namespace Signer
             InitializeComponent();
             FileModel = new FileModel();
             listViewItems.DataContext = FileModel;
+            menuItemHash.DataContext = this;
         }
 
         private async void buttonSelectFolder_Click(object sender, RoutedEventArgs e)
@@ -109,9 +111,11 @@ namespace Signer
             try
             {
                 if (useThumbprint)
-                    count = await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
+                    count = await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value,
+                        HashAlgorithm, progressBarSigned, po);
                 else
-                    count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value, progressBarSigned, po);
+                    count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value,
+                        HashAlgorithm, progressBarSigned, po);
                 System.Windows.MessageBox.Show($"Signed {count} files.");
             }
             catch (Exception ex)

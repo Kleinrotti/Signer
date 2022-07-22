@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:Signer"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
@@ -19,10 +20,19 @@
                 <MenuItem Header="_Exit" Click="MenuItemExit_Click" />
             </MenuItem>
             <MenuItem Header="_Settings">
+                <MenuItem Name="menuItemHash" Header="_Hash algorithm">
+                    <MenuItem.Resources>
+                        <l:ComparisonConverter x:Key="ComparisonConverter" />
+                    </MenuItem.Resources>
+                    <RadioButton Content="SHA1" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA1}}" />
+                    <RadioButton Content="SHA256" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA256}}" />
+                    <RadioButton Content="SHA384" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA384}}" />
+                    <RadioButton Content="SHA512" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA512}}" />
+                </MenuItem>
                 <MenuItem Header="_Timestampserver" Click="MenuItemTimestamp_Click" />
                 <MenuItem Header="_Certstore">
-                    <RadioButton Content="User" GroupName="test" IsChecked="True" Click="RadioButtonUser_Click" />
-                    <RadioButton Content="Computer" GroupName="test" Click="RadioButtonComputer_Click" />
+                    <RadioButton Content="User" GroupName="store" IsChecked="True" Click="RadioButtonUser_Click" />
+                    <RadioButton Content="Computer" GroupName="store" Click="RadioButtonComputer_Click" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="_Search pattern" Click="MenuItemPattern_Click" />

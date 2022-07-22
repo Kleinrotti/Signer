@@ -172,7 +172,8 @@ namespace Signer
         /// <param name="certPassword"></param>
         /// <param name="timestampUrl"></param>
         /// <exception cref="CryptographicException"></exception>
-        public static void SignWithCert(string appPath, string certPath, string certPassword, string timestampUrl = null)
+        public static void SignWithCert(string appPath, string certPath, string certPassword,
+            string timestampUrl = null, Hash hash = Hash.SHA1)
         {
             IntPtr pSignerCert = IntPtr.Zero;
             IntPtr pSubjectInfo = IntPtr.Zero;
@@ -186,7 +187,7 @@ namespace Signer
 
                 pSignerCert = CreateSignerCert(cert);
                 pSubjectInfo = CreateSignerSubjectInfo(appPath);
-                pSignatureInfo = CreateSignerSignatureInfo();
+                pSignatureInfo = CreateSignerSignatureInfo(hash);
                 pProviderInfo = GetProviderInfo(cert);
 
                 SIGNER_CONTEXT signerContext;
@@ -251,7 +252,8 @@ namespace Signer
         /// <param name="thumbprint"></param>
         /// <param name="timestampUrl"></param>
         /// <exception cref="CryptographicException"></exception>
-        public static void SignWithThumbprint(string appPath, string thumbprint, string timestampUrl = null)
+        public static void SignWithThumbprint(string appPath, string thumbprint, string timestampUrl = null,
+            Hash hash = Hash.SHA1)
         {
             IntPtr pSignerCert = IntPtr.Zero;
             IntPtr pSubjectInfo = IntPtr.Zero;
@@ -262,7 +264,7 @@ namespace Signer
             {
                 pSignerCert = CreateSignerCert(thumbprint);
                 pSubjectInfo = CreateSignerSubjectInfo(appPath);
-                pSignatureInfo = CreateSignerSignatureInfo();
+                pSignatureInfo = CreateSignerSignatureInfo(hash);
 
                 SignCode(pSubjectInfo, pSignerCert, pSignatureInfo, pProviderInfo);
 
@@ -453,12 +455,12 @@ namespace Signer
             return pSignerCert;
         }
 
-        private static IntPtr CreateSignerSignatureInfo()
+        private static IntPtr CreateSignerSignatureInfo(Hash hash)
         {
             SIGNER_SIGNATURE_INFO signatureInfo = new SIGNER_SIGNATURE_INFO
             {
                 cbSize = (uint)Marshal.SizeOf(typeof(SIGNER_SIGNATURE_INFO)),
-                algidHash = 0x00008004, // CALG_SHA1
+                algidHash = (uint)hash, // Hash
                 dwAttrChoice = 0x0, // SIGNER_NO_ATTR
                 pAttrAuthCode = IntPtr.Zero,
                 psAuthenticated = IntPtr.Zero,
@@ -505,7 +507,8 @@ namespace Signer
         }
 
         // Use SignerSign
-        private static void SignCode(IntPtr pSubjectInfo, IntPtr pSignerCert, IntPtr pSignatureInfo, IntPtr pProviderInfo)
+        private static void SignCode(IntPtr pSubjectInfo, IntPtr pSignerCert, IntPtr pSignatureInfo,
+            IntPtr pProviderInfo)
         {
             int hResult = SignerSign(
                 pSubjectInfo,
@@ -525,7 +528,8 @@ namespace Signer
         }
 
         // Use SignerSignEx
-        private static void SignCode(uint dwFlags, IntPtr pSubjectInfo, IntPtr pSignerCert, IntPtr pSignatureInfo, IntPtr pProviderInfo, out SIGNER_CONTEXT signerContext)
+        private static void SignCode(uint dwFlags, IntPtr pSubjectInfo, IntPtr pSignerCert,
+            IntPtr pSignatureInfo, IntPtr pProviderInfo, out SIGNER_CONTEXT signerContext)
         {
             int hResult = SignerSignEx(
                 dwFlags,
