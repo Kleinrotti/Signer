@@ -18,9 +18,9 @@ namespace Signer
         public Hash HashAlgorithm { get; set; } = Hash.SHA256;
         public TimestampType TimestampType { get; set; } = TimestampType.RFC3161;
         public TimestampHash TimestampHashAlgorithm { get; set; } = TimestampHash.SHA256;
+        public StoreLocation Store { get; set; } = StoreLocation.CurrentUser;
 
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        private StoreLocation _storeLocation = StoreLocation.CurrentUser;
 
         public MainWindow()
         {
@@ -30,6 +30,7 @@ namespace Signer
             menuItemHash.DataContext = this;
             menuItemTimestampStandard.DataContext = this;
             menuItemTimestampHash.DataContext = this;
+            menuItemCertstore.DataContext = this;
         }
 
         private async void buttonSelectFolder_Click(object sender, RoutedEventArgs e)
@@ -101,7 +102,7 @@ namespace Signer
 
         private void buttonStartSign_Click(object sender, RoutedEventArgs e)
         {
-            var certWindow = new CertWindow(Sign, _storeLocation);
+            var certWindow = new CertWindow(Sign, Store);
             certWindow.Owner = this;
             certWindow.ShowDialog();
         }
@@ -160,16 +161,6 @@ namespace Signer
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void RadioButtonUser_Click(object sender, RoutedEventArgs e)
-        {
-            _storeLocation = StoreLocation.CurrentUser;
-        }
-
-        private void RadioButtonComputer_Click(object sender, RoutedEventArgs e)
-        {
-            _storeLocation = StoreLocation.LocalMachine;
         }
 
         private void MenuItemTimestampServer_Click(object sender, RoutedEventArgs e)

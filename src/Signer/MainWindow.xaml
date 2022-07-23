@@ -4,11 +4,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:l="clr-namespace:Signer"
+        xmlns:c="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         Title="Signer" Height="560" Width="520">
     <Grid Height="Auto" Width="Auto">
+        <Grid.Resources>
+            <l:ComparisonConverter x:Key="ComparisonConverter" />
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -20,9 +24,6 @@
                 <MenuItem Header="_Exit" Click="MenuItemExit_Click" />
             </MenuItem>
             <MenuItem Header="_Settings">
-                <MenuItem.Resources>
-                    <l:ComparisonConverter x:Key="ComparisonConverter" />
-                </MenuItem.Resources>
                 <MenuItem Header="_Hash">
                     <MenuItem Name="menuItemHash" Header="_Hash algorithm">
                         <RadioButton Content="SHA1 (obsolete)" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA1}}" />
@@ -44,9 +45,9 @@
                         <RadioButton Content="RFC3161" IsChecked="{Binding TimestampType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampType.RFC3161}}" />
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="_Certstore">
-                    <RadioButton Content="User" GroupName="store" IsChecked="True" Click="RadioButtonUser_Click" />
-                    <RadioButton Content="Computer" GroupName="store" Click="RadioButtonComputer_Click" />
+                <MenuItem Name="menuItemCertstore" Header="_Certstore">
+                    <RadioButton Content="User" IsChecked="{Binding Store, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static c:StoreLocation.CurrentUser}}" />
+                    <RadioButton Content="Computer" IsChecked="{Binding Store, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static c:StoreLocation.LocalMachine}}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="_Search pattern" Click="MenuItemPattern_Click" />
