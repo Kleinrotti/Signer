@@ -8,3 +8,7 @@ Uses Microsoft authenticode.
 ## Requirements
 
 * .NET 4.8
+
+## Supported file types
+
+- .CAB, PE formats (.EXE, .DLL, etc) , .CAT, .MSI, .JAR,.OCX, .PS1, .PSM1, .PSD1, .PS1XML, .PSC1, .BAT
