@@ -20,16 +20,30 @@
                 <MenuItem Header="_Exit" Click="MenuItemExit_Click" />
             </MenuItem>
             <MenuItem Header="_Settings">
-                <MenuItem Name="menuItemHash" Header="_Hash algorithm">
-                    <MenuItem.Resources>
-                        <l:ComparisonConverter x:Key="ComparisonConverter" />
-                    </MenuItem.Resources>
-                    <RadioButton Content="SHA1" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA1}}" />
-                    <RadioButton Content="SHA256" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA256}}" />
-                    <RadioButton Content="SHA384" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA384}}" />
-                    <RadioButton Content="SHA512" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA512}}" />
+                <MenuItem.Resources>
+                    <l:ComparisonConverter x:Key="ComparisonConverter" />
+                </MenuItem.Resources>
+                <MenuItem Header="_Hash">
+                    <MenuItem Name="menuItemHash" Header="_Hash algorithm">
+                        <RadioButton Content="SHA1 (obsolete)" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA1}}" />
+                        <RadioButton Content="SHA256" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA256}}" />
+                        <RadioButton Content="SHA384" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA384}}" />
+                        <RadioButton Content="SHA512" IsChecked="{Binding HashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:Hash.SHA512}}" />
+                    </MenuItem>
+                    <MenuItem Name="menuItemTimestampHash" Header="_Hash algorithm timestamp">
+                        <RadioButton Content="SHA1 (obsolete)" IsChecked="{Binding TimestampHashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampHash.SHA1}}" />
+                        <RadioButton Content="SHA256" IsChecked="{Binding TimestampHashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampHash.SHA256}}" />
+                        <RadioButton Content="SHA384" IsChecked="{Binding TimestampHashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampHash.SHA384}}" />
+                        <RadioButton Content="SHA512" IsChecked="{Binding TimestampHashAlgorithm, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampHash.SHA512}}" />
+                    </MenuItem>
                 </MenuItem>
-                <MenuItem Header="_Timestampserver" Click="MenuItemTimestamp_Click" />
+                <MenuItem Header="_Timestamp">
+                    <MenuItem Header="_Server" Click="MenuItemTimestampServer_Click" />
+                    <MenuItem Name="menuItemTimestampStandard" Header="_Timestamp Standard">
+                        <RadioButton Content="Authenticode (obsolete)" IsChecked="{Binding TimestampType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampType.Authenticode}}" />
+                        <RadioButton Content="RFC3161" IsChecked="{Binding TimestampType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static l:TimestampType.RFC3161}}" />
+                    </MenuItem>
+                </MenuItem>
                 <MenuItem Header="_Certstore">
                     <RadioButton Content="User" GroupName="store" IsChecked="True" Click="RadioButtonUser_Click" />
                     <RadioButton Content="Computer" GroupName="store" Click="RadioButtonComputer_Click" />

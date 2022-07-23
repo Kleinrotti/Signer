@@ -96,13 +96,10 @@ namespace Signer
                 return false;
         }
 
-        internal static async Task<int> SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, Hash hash, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task<int> SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, Hash hash,
+            TimestampHash timestampHash, TimestampType timestampType, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
             int count = 0;
-            var collection = new X509Certificate2Collection();
-
-            //try to import certificate for verification
-            collection.Import(certPath, passphrase, X509KeyStorageFlags.PersistKeySet);
             var task = Task.Run(() =>
             {
                 Parallel.ForEach(files, parallelOptions, file =>
@@ -114,7 +111,7 @@ namespace Signer
                     }
                     try
                     {
-                        SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl, hash);
+                        SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl, hash, timestampHash, timestampType);
                         count++;
                     }
                     catch (Exception) { throw; }
@@ -125,7 +122,8 @@ namespace Signer
             return count;
         }
 
-        internal static async Task<int> SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, Hash hash, ProgressBar progressBar, ParallelOptions parallelOptions)
+        internal static async Task<int> SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, Hash hash,
+            TimestampHash timestampHash, TimestampType timestampType, ProgressBar progressBar, ParallelOptions parallelOptions)
         {
             int count = 0;
             var task = Task.Run(() =>
@@ -139,7 +137,7 @@ namespace Signer
                     }
                     try
                     {
-                        SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl, hash);
+                        SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl, hash, timestampHash, timestampType);
                         count++;
                     }
                     catch (Exception) { throw; }

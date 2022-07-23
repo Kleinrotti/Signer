@@ -9,7 +9,7 @@ namespace Signer
     {
         #region Structures
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_SUBJECT_INFO
         {
             public uint cbSize;
@@ -17,41 +17,41 @@ namespace Signer
             public uint dwSubjectChoice;
             public SubjectChoiceUnion Union1;
 
-            [StructLayoutAttribute(LayoutKind.Explicit)]
+            [StructLayout(LayoutKind.Explicit)]
             internal struct SubjectChoiceUnion
             {
                 [FieldOffsetAttribute(0)]
-                public System.IntPtr pSignerFileInfo;
+                public IntPtr pSignerFileInfo;
 
                 [FieldOffsetAttribute(0)]
-                public System.IntPtr pSignerBlobInfo;
+                public IntPtr pSignerBlobInfo;
             };
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_CERT
         {
             public uint cbSize;
             public uint dwCertChoice;
             public SignerCertUnion Union1;
 
-            [StructLayoutAttribute(LayoutKind.Explicit)]
+            [StructLayout(LayoutKind.Explicit)]
             internal struct SignerCertUnion
             {
-                [FieldOffsetAttribute(0)]
+                [FieldOffset(0)]
                 public IntPtr pwszSpcFile;
 
-                [FieldOffsetAttribute(0)]
+                [FieldOffset(0)]
                 public IntPtr pCertStoreInfo;
 
-                [FieldOffsetAttribute(0)]
+                [FieldOffset(0)]
                 public IntPtr pSpcChainInfo;
             };
 
             public IntPtr hwnd;
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_SIGNATURE_INFO
         {
             public uint cbSize;
@@ -62,7 +62,7 @@ namespace Signer
             public IntPtr psUnauthenticated; // PCRYPT_ATTRIBUTES
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_FILE_INFO
         {
             public uint cbSize;
@@ -70,7 +70,7 @@ namespace Signer
             public IntPtr hFile;
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_CERT_STORE_INFO
         {
             public uint cbSize;
@@ -79,7 +79,7 @@ namespace Signer
             public IntPtr hCertStore;
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_CONTEXT
         {
             public uint cbSize;
@@ -87,7 +87,7 @@ namespace Signer
             public IntPtr pbBlob;
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
         private struct SIGNER_PROVIDER_INFO
         {
             public uint cbSize;
@@ -97,13 +97,13 @@ namespace Signer
             public uint dwPvkChoice;
             public SignerProviderUnion Union1;
 
-            [StructLayoutAttribute(LayoutKind.Explicit)]
+            [StructLayout(LayoutKind.Explicit)]
             internal struct SignerProviderUnion
             {
-                [FieldOffsetAttribute(0)]
+                [FieldOffset(0)]
                 public IntPtr pwszPvkFileName;
 
-                [FieldOffsetAttribute(0)]
+                [FieldOffset(0)]
                 public IntPtr pwszKeyContainer;
             };
         }
@@ -111,17 +111,6 @@ namespace Signer
         #endregion Structures
 
         #region Imports
-
-        [DllImport("Mssign32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern int SignerSign(
-            IntPtr pSubjectInfo,        // SIGNER_SUBJECT_INFO
-            IntPtr pSignerCert,         // SIGNER_CERT
-            IntPtr pSignatureInfo,      // SIGNER_SIGNATURE_INFO
-            IntPtr pProviderInfo,       // SIGNER_PROVIDER_INFO
-            string pwszHttpTimeStamp,   // LPCWSTR
-            IntPtr psRequest,           // PCRYPT_ATTRIBUTES
-            IntPtr pSipData             // LPVOID
-            );
 
         [DllImport("Mssign32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int SignerSignEx(
@@ -137,18 +126,11 @@ namespace Signer
             );
 
         [DllImport("Mssign32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern int SignerTimeStamp(
-            IntPtr pSubjectInfo,        // SIGNER_SUBJECT_INFO
-            string pwszHttpTimeStamp,   // LPCWSTR
-            IntPtr psRequest,           // PCRYPT_ATTRIBUTES
-            IntPtr pSipData             // LPVOID
-            );
-
-        [DllImport("Mssign32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern int SignerTimeStampEx(
+        private static extern int SignerTimeStampEx2(
             uint dwFlags,               // DWORD
             IntPtr pSubjectInfo,        // SIGNER_SUBJECT_INFO
             string pwszHttpTimeStamp,   // LPCWSTR
+            IntPtr dwAlgId,               // ALG_ID
             IntPtr psRequest,           // PCRYPT_ATTRIBUTES
             IntPtr pSipData,            // LPVOID
             out SIGNER_CONTEXT ppSignerContext  // SIGNER_CONTEXT
@@ -165,139 +147,34 @@ namespace Signer
         #region public methods
 
         /// <summary>
-        /// Call SignerSignEx and SignerTimeStampEx for a given .pfx
+        /// Call SignerSignEx and SignerTimeStampEx2 for a given .pfx
         /// </summary>
         /// <param name="appPath"></param>
         /// <param name="certPath"></param>
         /// <param name="certPassword"></param>
         /// <param name="timestampUrl"></param>
-        /// <exception cref="CryptographicException"></exception>
+        /// <param name="hash"></param>
+        /// <param name="timestampHash"></param>
+        /// <param name="timestampType"></param>
         public static void SignWithCert(string appPath, string certPath, string certPassword,
-            string timestampUrl = null, Hash hash = Hash.SHA1)
+            string timestampUrl, Hash hash, TimestampHash timestampHash, TimestampType timestampType)
         {
-            IntPtr pSignerCert = IntPtr.Zero;
-            IntPtr pSubjectInfo = IntPtr.Zero;
-            IntPtr pSignatureInfo = IntPtr.Zero;
-            IntPtr pProviderInfo = IntPtr.Zero;
-
-            try
-            {
-                // Grab the X509Certificate from the .pfx file.
-                X509Certificate2 cert = new X509Certificate2(certPath, certPassword);
-
-                pSignerCert = CreateSignerCert(cert);
-                pSubjectInfo = CreateSignerSubjectInfo(appPath);
-                pSignatureInfo = CreateSignerSignatureInfo(hash);
-                pProviderInfo = GetProviderInfo(cert);
-
-                SIGNER_CONTEXT signerContext;
-
-                SignCode(0x0, pSubjectInfo, pSignerCert, pSignatureInfo, pProviderInfo, out signerContext);
-
-                // Only attempt to timestamp if we've got a timestampUrl.
-                if (!string.IsNullOrEmpty(timestampUrl))
-                {
-                    TimeStampSignedCode(0x0, pSubjectInfo, timestampUrl, out signerContext);
-                }
-            }
-            catch (CryptographicException ce)
-            {
-                string exception;
-
-                switch (Marshal.GetHRForException(ce))
-                {
-                    case -2146885623:
-                        exception = string.Format(@"An error occurred while attempting to load the signing certificate. ""{0}"" does not appear to contain a valid certificate.", certPath);
-                        break;
-
-                    case -2147024810:
-                        exception = string.Format(@"An error occurred while attempting to load the signing certificate.  The specified password was incorrect.");
-                        break;
-
-                    default:
-                        exception = string.Format(@"An error occurred while attempting to load the signing certificate.  {0}", ce.Message);
-                        break;
-                }
-                throw new CryptographicException(exception);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (pSignerCert != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSignerCert, typeof(SIGNER_CERT));
-                }
-                if (pSubjectInfo != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSubjectInfo, typeof(SIGNER_SUBJECT_INFO));
-                }
-                if (pSignatureInfo != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSignatureInfo, typeof(SIGNER_SIGNATURE_INFO));
-                }
-                if (pProviderInfo != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSignatureInfo, typeof(SIGNER_PROVIDER_INFO));
-                }
-            }
+            Sign(new X509Certificate2(certPath, certPassword), appPath, hash, timestampUrl, timestampHash, timestampType);
         }
 
         /// <summary>
-        /// Call SignerSign and SignerTimeStamp for a given thumbprint.
+        /// Call SignerSignEx and SignerTimeStampEx2 for a given thumbprint.
         /// </summary>
         /// <param name="appPath"></param>
         /// <param name="thumbprint"></param>
         /// <param name="timestampUrl"></param>
-        /// <exception cref="CryptographicException"></exception>
-        public static void SignWithThumbprint(string appPath, string thumbprint, string timestampUrl = null,
-            Hash hash = Hash.SHA1)
+        /// <param name="hash"></param>
+        /// <param name="timestampHash"></param>
+        /// <param name="timestampType"></param>
+        public static void SignWithThumbprint(string appPath, string thumbprint, string timestampUrl,
+            Hash hash, TimestampHash timestampHash, TimestampType timestampType)
         {
-            IntPtr pSignerCert = IntPtr.Zero;
-            IntPtr pSubjectInfo = IntPtr.Zero;
-            IntPtr pSignatureInfo = IntPtr.Zero;
-            IntPtr pProviderInfo = IntPtr.Zero;
-
-            try
-            {
-                pSignerCert = CreateSignerCert(thumbprint);
-                pSubjectInfo = CreateSignerSubjectInfo(appPath);
-                pSignatureInfo = CreateSignerSignatureInfo(hash);
-
-                SignCode(pSubjectInfo, pSignerCert, pSignatureInfo, pProviderInfo);
-
-                // Only attempt to timestamp if we've got a timestampUrl.
-                if (!string.IsNullOrEmpty(timestampUrl))
-                {
-                    TimeStampSignedCode(pSubjectInfo, timestampUrl);
-                }
-            }
-            catch (CryptographicException ce)
-            {
-                string exception = string.Format(@"An error occurred while attempting to load the signing certificate.  {0}", ce.Message);
-                throw new CryptographicException(exception);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (pSignerCert != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSignerCert, typeof(SIGNER_CERT));
-                }
-                if (pSubjectInfo != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSubjectInfo, typeof(SIGNER_SUBJECT_INFO));
-                }
-                if (pSignatureInfo != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(pSignatureInfo, typeof(SIGNER_SIGNATURE_INFO));
-                }
-            }
+            Sign(FindCertByThumbprint(thumbprint), appPath, hash, timestampUrl, timestampHash, timestampType);
         }
 
         #endregion public methods
@@ -416,45 +293,6 @@ namespace Signer
             return pSignerCert;
         }
 
-        private static IntPtr CreateSignerCert(string thumbprint)
-        {
-            SIGNER_CERT signerCert = new SIGNER_CERT
-            {
-                cbSize = (uint)Marshal.SizeOf(typeof(SIGNER_CERT)),
-                dwCertChoice = 0x2,
-                Union1 = new SIGNER_CERT.SignerCertUnion
-                {
-                    pCertStoreInfo = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SIGNER_CERT_STORE_INFO)))
-                },
-                hwnd = IntPtr.Zero
-            };
-
-            const int X509_ASN_ENCODING = 0x00000001;
-            const int PKCS_7_ASN_ENCODING = 0x00010000;
-
-            X509Certificate2 cert = FindCertByThumbprint(thumbprint);
-
-            IntPtr pCertContext = CertCreateCertificateContext(
-                X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
-                cert.GetRawCertData(),
-                cert.GetRawCertData().Length);
-
-            SIGNER_CERT_STORE_INFO certStoreInfo = new SIGNER_CERT_STORE_INFO
-            {
-                cbSize = (uint)Marshal.SizeOf(typeof(SIGNER_CERT_STORE_INFO)),
-                pSigningCert = pCertContext,
-                dwCertPolicy = 0x2, // SIGNER_CERT_POLICY_CHAIN
-                hCertStore = IntPtr.Zero
-            };
-
-            Marshal.StructureToPtr(certStoreInfo, signerCert.Union1.pCertStoreInfo, false);
-
-            IntPtr pSignerCert = Marshal.AllocHGlobal(Marshal.SizeOf(signerCert));
-            Marshal.StructureToPtr(signerCert, pSignerCert, false);
-
-            return pSignerCert;
-        }
-
         private static IntPtr CreateSignerSignatureInfo(Hash hash)
         {
             SIGNER_SIGNATURE_INFO signatureInfo = new SIGNER_SIGNATURE_INFO
@@ -506,24 +344,56 @@ namespace Signer
             return pProviderInfo;
         }
 
-        // Use SignerSign
-        private static void SignCode(IntPtr pSubjectInfo, IntPtr pSignerCert, IntPtr pSignatureInfo,
-            IntPtr pProviderInfo)
+        private static void Sign(X509Certificate2 cert, string appPath, Hash hash, string timestampUrl, TimestampHash timestampHash, TimestampType timestampType)
         {
-            int hResult = SignerSign(
-                pSubjectInfo,
-                pSignerCert,
-                pSignatureInfo,
-                pProviderInfo,
-                null,
-                IntPtr.Zero,
-                IntPtr.Zero
-                );
+            IntPtr pSignerCert = IntPtr.Zero;
+            IntPtr pSubjectInfo = IntPtr.Zero;
+            IntPtr pSignatureInfo = IntPtr.Zero;
+            IntPtr pProviderInfo = IntPtr.Zero;
 
-            if (hResult != 0)
+            try
             {
-                // See if we can get anything useful.  Jury's still out on this one.
-                Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+                pSignerCert = CreateSignerCert(cert);
+                pSubjectInfo = CreateSignerSubjectInfo(appPath);
+                pSignatureInfo = CreateSignerSignatureInfo(hash);
+                pProviderInfo = GetProviderInfo(cert);
+
+                SIGNER_CONTEXT signerContext;
+                SignCode(0x0, pSubjectInfo, pSignerCert, pSignatureInfo, pProviderInfo, out signerContext);
+
+                // Only attempt to timestamp if we've got a timestampUrl.
+                if (!string.IsNullOrEmpty(timestampUrl))
+                {
+                    TimeStampSignedCode(pSubjectInfo, timestampUrl, out signerContext, timestampHash.GetEnumMemberValue(), timestampType);
+                }
+            }
+            catch (CryptographicException ce)
+            {
+                string exception = string.Format(@"An error occurred while attempting to load the signing certificate.  {0}", ce.Message);
+                throw new CryptographicException(exception);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (pSignerCert != IntPtr.Zero)
+                {
+                    Marshal.DestroyStructure(pSignerCert, typeof(SIGNER_CERT));
+                }
+                if (pSubjectInfo != IntPtr.Zero)
+                {
+                    Marshal.DestroyStructure(pSubjectInfo, typeof(SIGNER_SUBJECT_INFO));
+                }
+                if (pSignatureInfo != IntPtr.Zero)
+                {
+                    Marshal.DestroyStructure(pSignatureInfo, typeof(SIGNER_SIGNATURE_INFO));
+                }
+                if (pProviderInfo != IntPtr.Zero)
+                {
+                    Marshal.DestroyStructure(pProviderInfo, typeof(SIGNER_PROVIDER_INFO));
+                }
             }
         }
 
@@ -550,31 +420,14 @@ namespace Signer
             }
         }
 
-        // Use SignerTimeStamp
-        private static void TimeStampSignedCode(IntPtr pSubjectInfo, string timestampUrl)
+        // Use SignerTimeStampEx2
+        private static void TimeStampSignedCode(IntPtr pSubjectInfo, string timestampUrl, out SIGNER_CONTEXT signerContext, string timestampHashOid, TimestampType dwFlags)
         {
-            int hResult = SignerTimeStamp(
+            int hResult = SignerTimeStampEx2(
+                (uint)dwFlags,
                 pSubjectInfo,
                 timestampUrl,
-                IntPtr.Zero,
-                IntPtr.Zero
-                );
-
-            if (hResult != 0)
-            {
-                // We can't get anything useful from GetHRForLastWin32Error, so let's throw our own.
-                //Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
-                throw new Exception(string.Format(@"""{0}"" could not be used at this time.  If necessary, check the timestampUrl, internet connection, and try again.", timestampUrl));
-            }
-        }
-
-        // Use SignerTimeStampEx
-        private static void TimeStampSignedCode(uint dwFlags, IntPtr pSubjectInfo, string timestampUrl, out SIGNER_CONTEXT signerContext)
-        {
-            int hResult = SignerTimeStampEx(
-                dwFlags,
-                pSubjectInfo,
-                timestampUrl,
+                Marshal.StringToHGlobalAnsi(timestampHashOid),
                 IntPtr.Zero,
                 IntPtr.Zero,
                 out signerContext

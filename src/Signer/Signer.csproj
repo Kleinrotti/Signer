@@ -60,6 +60,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -91,10 +92,12 @@
       <DependentUpon>DialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileObject.cs" />
-    <Compile Include="Hash.cs" />
+    <Compile Include="Enums\Hash.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="SignTool.cs" />
+    <Compile Include="Enums\TimestampType.cs" />
+    <Compile Include="Enums\TimestampHash.cs" />
     <Page Include="CertWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -15,7 +15,10 @@ namespace Signer
     public partial class MainWindow : Window
     {
         internal FileModel FileModel { get; set; }
-        public Hash HashAlgorithm { get; set; } = Hash.SHA1;
+        public Hash HashAlgorithm { get; set; } = Hash.SHA256;
+        public TimestampType TimestampType { get; set; } = TimestampType.RFC3161;
+        public TimestampHash TimestampHashAlgorithm { get; set; } = TimestampHash.SHA256;
+
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private StoreLocation _storeLocation = StoreLocation.CurrentUser;
 
@@ -25,6 +28,8 @@ namespace Signer
             FileModel = new FileModel();
             listViewItems.DataContext = FileModel;
             menuItemHash.DataContext = this;
+            menuItemTimestampStandard.DataContext = this;
+            menuItemTimestampHash.DataContext = this;
         }
 
         private async void buttonSelectFolder_Click(object sender, RoutedEventArgs e)
@@ -112,10 +117,10 @@ namespace Signer
             {
                 if (useThumbprint)
                     count = await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value,
-                        HashAlgorithm, progressBarSigned, po);
+                        HashAlgorithm, TimestampHashAlgorithm, TimestampType, progressBarSigned, po);
                 else
                     count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value,
-                        HashAlgorithm, progressBarSigned, po);
+                        HashAlgorithm, TimestampHashAlgorithm, TimestampType, progressBarSigned, po);
                 System.Windows.MessageBox.Show($"Signed {count} files.");
             }
             catch (Exception ex)
@@ -148,7 +153,7 @@ namespace Signer
         {
             buttonCancel.Visibility = Visibility.Collapsed;
             wrapPanelSelect.Visibility = Visibility.Visible;
-            progressBarSigned.Visibility = Visibility.Hidden;
+            gridProgress.Visibility = Visibility.Hidden;
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
         }
 
@@ -167,7 +172,7 @@ namespace Signer
             _storeLocation = StoreLocation.LocalMachine;
         }
 
-        private void MenuItemTimestamp_Click(object sender, RoutedEventArgs e)
+        private void MenuItemTimestampServer_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new DialogBox("Timestamp server to use");
             dialog.Owner = this;
