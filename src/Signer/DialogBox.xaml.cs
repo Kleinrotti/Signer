@@ -5,7 +5,7 @@ namespace Signer
     /// <summary>
     /// Interaction logic for DialogBox.xaml
     /// </summary>
-    public partial class DialogBox : Window
+    public partial class DialogBox
     {
         public DialogBox(string dialogText)
         {
