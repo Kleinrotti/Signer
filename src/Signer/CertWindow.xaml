@@ -9,7 +9,7 @@
         WindowStyle="ToolWindow"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Title="" Height="260" Width="390">
+        Title="" Height="270" Width="390">
     <Grid Height="200" Width="350">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
