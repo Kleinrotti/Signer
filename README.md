@@ -16,7 +16,7 @@ Utility to bulk sign files with a certificate (pfx) or with a certificate which 
 
 ## Supported file types
 
-- .CAB, PE formats (.EXE, .DLL, etc) , .CAT, .MSI, .JAR,.OCX, .PS1, .PSM1, .PSD1, .PS1XML, .PSC1, .BAT
+- .CAB, PE formats (.EXE, .DLL, etc) , .CAT, .MSI,.OCX, .PS1, .PSM1, .PSD1, .PS1XML, .PSC1, .BAT
 
 ## Requirements
 
