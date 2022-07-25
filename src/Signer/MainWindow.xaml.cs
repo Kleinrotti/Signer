@@ -12,7 +12,7 @@ namespace Signer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         internal FileModel FileModel { get; set; }
         public Hash HashAlgorithm { get; set; } = Hash.SHA256;
@@ -176,7 +176,8 @@ namespace Signer
 
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
-            var about = new AboutBox();
+            var about = new About();
+            about.Owner = this;
             about.ShowDialog();
         }
 

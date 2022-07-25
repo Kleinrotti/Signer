@@ -1,13 +1,15 @@
-﻿<Window x:Class="Signer.CertWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
+﻿<mah:MetroWindow x:Class="Signer.CertWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 mc:Ignorable="d"
         WindowStyle="ToolWindow"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Title="" Height="260" Width="390">
+        Title="" Height="270" Width="390">
     <Grid Height="200" Width="350">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,13 +24,21 @@
             <Border BorderThickness="2" Grid.Column="0">
                 <StackPanel Name="stackPanelCertificateFile">
                     <TextBlock Name="textBlockCertificate" Text="Select Certificate file" HorizontalAlignment="Center" />
-                    <Button Name="buttonSelect" Content="Select" Click="buttonSelect_Click" />
+                    <Button Name="buttonSelect" Click="buttonSelect_Click">
+                        <iconPacks:PackIconMaterial Width="20"
+                                  Height="20"
+                                  Kind="FileCertificate" />
+                    </Button>
                 </StackPanel>
             </Border>
             <Border BorderThickness="2" Grid.Column="1">
                 <StackPanel Name="stackPanelCertificateStore">
                     <TextBlock Name="textBlockCertificateStore" Text="Select Certificate store" HorizontalAlignment="Center" />
-                    <Button Name="buttonSelectFromStore" Content="Select" Click="buttonSelectFromStore_Click" />
+                    <Button Name="buttonSelectFromStore" Click="buttonSelectFromStore_Click">
+                        <iconPacks:PackIconMaterial Width="20"
+                                  Height="20"
+                                  Kind="Certificate" />
+                    </Button>
                 </StackPanel>
             </Border>
         </Grid>
@@ -37,7 +47,11 @@
             <PasswordBox Name="passwordBoxPassphrase" />
         </StackPanel>
         <StackPanel VerticalAlignment="Bottom" Grid.Row="2">
-            <Button Name="buttonApply" Content="Sign" Click="buttonApply_Click" Width="150" Height="30" IsEnabled="False" />
+            <Button Name="buttonApply" Click="buttonApply_Click" Width="120" Height="35" IsEnabled="False">
+                <iconPacks:PackIconMaterial Width="20"
+                                  Height="20"
+                                  Kind="ContentSaveMoveOutline" />
+            </Button>
         </StackPanel>
     </Grid>
-</Window>
+</mah:MetroWindow>

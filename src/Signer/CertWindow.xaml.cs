@@ -10,7 +10,7 @@ namespace Signer
     /// <summary>
     /// Interaction logic for CertWindow.xaml
     /// </summary>
-    public partial class CertWindow : Window
+    public partial class CertWindow
     {
         private Action<string, bool, string> _callback;
         private string _certificate;

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace Signer
 {
-    internal partial class AboutBox : Form
+    /// <summary>
+    /// Interaction logic for About.xaml
+    /// </summary>
+    public partial class About
     {
-        public AboutBox()
+        public About()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-            this.labelCopyright.Text = AssemblyCopyright;
-            this.labelCompanyName.Text = AssemblyCompany;
+            this.textBoxProductName.Text = AssemblyProduct;
+            this.textBoxVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            this.textBoxCopyright.Text = AssemblyCopyright;
+            this.textBoxCompany.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
         }
 
