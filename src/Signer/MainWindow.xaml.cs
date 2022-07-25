@@ -176,7 +176,8 @@ namespace Signer
 
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e)
         {
-            var about = new AboutBox();
+            var about = new About();
+            about.Owner = this;
             about.ShowDialog();
         }
 
