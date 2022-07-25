@@ -92,7 +92,7 @@
             </WrapPanel>
             <Button Name="buttonStartSign" Content="Sign files" Height="40" Click="buttonStartSign_Click" Visibility="Hidden" />
             <Button Name="buttonCancel" Content="Cancel" Height="40" Click="buttonCancel_Click" Visibility="Hidden"/>
-            <CheckBox Name="checkBoxIncludeSigned" Content="Sign already signed files too." Visibility="Hidden" />
+            <CheckBox Name="checkBoxIncludeSigned" Content="Include already signed files" Visibility="Hidden" />
         </StackPanel>
         <StackPanel Grid.Row="3">
             <Grid Name="gridProgress" Visibility="Hidden">
