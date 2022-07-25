@@ -1,5 +1,6 @@
 ﻿<mah:MetroWindow x:Class="Signer.About"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:properties="clr-namespace:Signer.Properties"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,11 +11,14 @@
         WindowStartupLocation="CenterOwner"
         Title="About" Height="300" Width="440">
     <Grid>
+        <Grid.Resources>
+            <BitmapImage x:Key="logoSource" UriSource="../Resources/logo.png" />
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180" />
             <ColumnDefinition  Width="*" />
         </Grid.ColumnDefinitions>
-        <Image Source="Resources\logo.png" Width="200" Height="200" />
+        <Image Source="{StaticResource logoSource}" Width="200" Height="200" />
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition />
