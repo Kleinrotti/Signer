@@ -13,7 +13,7 @@ namespace Signer
     internal static class Helpers
     {
         public static string TimestampUrl { get; set; } = "http://timestamp.digicert.com";
-        private static IEnumerable<string> _pattern = new List<string> { "exe", "dll", "bat", "ps1", "cat", "cab" };
+        private static IEnumerable<string> _pattern = new List<string> { "exe", "dll", "ps1", "cat", "cab", "appx", "msi", "msix", "sys" };
 
         public static IEnumerable<string> FileSearchPattern
         {
