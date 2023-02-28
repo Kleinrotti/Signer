@@ -37,7 +37,7 @@
                 <TextBox Name="textBoxCopyright" />
                 <TextBox Name="textBoxCompany" />
             </StackPanel>
-            <TextBox Name="textBoxDescription" Grid.Row="1" Margin=" 10 10 10 10" BorderBrush="Black" BorderThickness="1" TextWrapping="Wrap" />
+            <TextBox Name="textBoxDescription" Grid.Row="1" Margin=" 10 10 10 10" BorderBrush="Black" BorderThickness="1" TextWrapping="Wrap" IsReadOnly="True"/>
         </Grid>
     </Grid>
 </mah:MetroWindow>
