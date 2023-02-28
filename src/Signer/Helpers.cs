@@ -6,15 +6,21 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace Signer
 {
     internal static class Helpers
     {
+        /// <summary>
+        /// Timestamp url/server
+        /// </summary>
         public static string TimestampUrl { get; set; } = "http://timestamp.digicert.com";
+
         private static IEnumerable<string> _pattern = new List<string> { "exe", "dll", "ps1", "cat", "cab", "appx", "msi", "msix", "sys" };
 
+        /// <summary>
+        /// Get or set the current file search pattern for folder search.
+        /// </summary>
         public static IEnumerable<string> FileSearchPattern
         {
             get
@@ -25,7 +31,14 @@ namespace Signer
             set { _pattern = value; }
         }
 
-        internal static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, ProgressBar progressBar)
+        /// <summary>
+        /// Scan a directory and sub directories for files which support signing.
+        /// </summary>
+        /// <param name="folder">Folder path</param>
+        /// <param name="parallelOptions"><see cref="ParallelOptions"/> set your cancellation token here.</param>
+        /// <param name="progressCallback">Callback function to obtain the current process progress.</param>
+        /// <returns></returns>
+        public static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, Action<int, int> progressCallback)
         {
             var fileObjects = new ConcurrentBag<FileObject>();
             var task = Task.Run(() =>
@@ -40,18 +53,24 @@ namespace Signer
                     System.Windows.MessageBox.Show(ex.Message);
                     return;
                 }
-                progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Maximum = files.Count(); }));
+                var fileCount = files.Count();
+                var progressCount = 0;
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
-                    progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
                     fileObjects.Add(InspectFile(file));
+                    progressCallback(fileCount, progressCount++);
                 });
             });
             await task;
             return fileObjects.ToList();
         }
 
-        internal static async Task<FileObject> ScanFile(string file)
+        /// <summary>
+        /// Scan a single file if it's signed.
+        /// </summary>
+        /// <param name="file">Path to your file.</param>
+        /// <returns>Return the <see cref="FileObject"/></returns>
+        public static async Task<FileObject> ScanFile(string file)
         {
             return await Task.Run(() =>
             {
@@ -96,59 +115,106 @@ namespace Signer
                 return false;
         }
 
-        internal static async Task<int> SignWithCert(string certPath, string passphrase, List<FileObject> files, bool includeSigned, Hash hash,
-            TimestampHash timestampHash, TimestampType timestampType, ProgressBar progressBar, ParallelOptions parallelOptions)
+        /// <summary>
+        /// Sign a list of files with a certificate file.
+        /// </summary>
+        /// <param name="certPath">Full path to the certificate.</param>
+        /// <param name="passphrase">Passphrase of the certificate.</param>
+        /// <param name="files"></param>
+        /// <param name="progressCallback">Callback function to obtain the current process progress.</param>
+        /// <param name="parallelOptions"><see cref="ParallelOptions"/> set your cancellation token here.</param>
+        /// <param name="includeSigned">Deteremine wether you want to override a signature of an already signed file.</param>
+        /// <param name="hash">Hash algorithm to use.</param>
+        /// <param name="timestampHash">Hash algorithm to use for the timestamp signiture. Keep in mind, not all servers support all signature types.</param>
+        /// <param name="timestampType"></param>
+        /// <returns>Returns a <see cref="Tuple"/> which contains successfull files, skipped files and failed files.</returns>
+        public static async Task<Tuple<int, int, int>> SignWithCert(string certPath, string passphrase, List<FileObject> files, Action<int, int> progressCallback, ParallelOptions parallelOptions, bool includeSigned = false, Hash hash = Hash.SHA256,
+            TimestampHash timestampHash = TimestampHash.SHA256, TimestampType timestampType = TimestampType.RFC3161)
         {
             int count = 0;
+            int success = 0;
+            int skipped = 0;
+            int failed = 0;
+
             var task = Task.Run(() =>
             {
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
                     if (includeSigned == false && file.Signed == true)
                     {
-                        progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
+                        skipped++;
                         return;
                     }
                     try
                     {
                         SignTool.SignWithCert(file.FullPath, certPath, passphrase, TimestampUrl, hash, timestampHash, timestampType);
-                        count++;
+                        success++;
                     }
-                    catch (Exception) { throw; }
-                    progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
+                    catch (Exception) { failed++; }
+                    finally
+                    {
+                        progressCallback(files.Count, count++);
+                    }
                 });
             });
             await task;
-            return count;
+            return new Tuple<int, int, int>(success, skipped, failed);
         }
 
-        internal static async Task<int> SignWithStore(string thumbprint, List<FileObject> files, bool includeSigned, Hash hash,
-            TimestampHash timestampHash, TimestampType timestampType, ProgressBar progressBar, ParallelOptions parallelOptions)
+        /// <summary>
+        /// Sign a list of files with a certificate which is in your operating system certificate store.
+        /// </summary>
+        /// <param name="thumbprint">Thumbprint from your certificate in your operating system store.</param>
+        /// <param name="files"></param>
+        /// <param name="progressCallback">Callback function to obtain the current process progress.</param>
+        /// <param name="parallelOptions"><see cref="ParallelOptions"/> set your cancellation token here.</param>
+        /// <param name="includeSigned">Deteremine wether you want to override a signature of an already signed file.</param>
+        /// <param name="hash">Hash algorithm to use.</param>
+        /// <param name="timestampHash">Hash algorithm to use for the timestamp signiture. Keep in mind, not all servers support all signature types.</param>
+        /// <param name="timestampType"></param>
+        /// <returns></returns>
+        public static async Task<Tuple<int, int, int>> SignWithStore(string thumbprint, List<FileObject> files, Action<int, int> progressCallback, ParallelOptions parallelOptions, bool includeSigned = false, Hash hash = Hash.SHA256,
+            TimestampHash timestampHash = TimestampHash.SHA256, TimestampType timestampType = TimestampType.RFC3161)
         {
             int count = 0;
+            int success = 0;
+            int skipped = 0;
+            int failed = 0;
+
             var task = Task.Run(() =>
             {
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
                     if (includeSigned == false && file.Signed == true)
                     {
-                        progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
+                        skipped++;
                         return;
                     }
                     try
                     {
                         SignTool.SignWithThumbprint(file.FullPath, thumbprint, TimestampUrl, hash, timestampHash, timestampType);
-                        count++;
+                        success++;
                     }
-                    catch (Exception) { throw; }
-                    progressBar.Dispatcher.Invoke(new Action(() => { progressBar.Value++; }));
+                    catch (Exception) { failed++; }
+                    finally
+                    {
+                        progressCallback(files.Count, count++);
+                    }
                 });
             });
             await task;
-            return count;
+            return new Tuple<int, int, int>(success, skipped, failed);
         }
 
-        internal static X509Certificate2 SelectCertFromStore(StoreName store, StoreLocation location, string windowTitle, string windowMsg)
+        /// <summary>
+        /// Opens the Windows dialog window to select a certificate from user or operating system store.
+        /// </summary>
+        /// <param name="store">Display certificates from this store.</param>
+        /// <param name="location">Display certificates from this store location.</param>
+        /// <param name="windowTitle">Title of the opening window.</param>
+        /// <param name="windowMsg">Message of the opening window.</param>
+        /// <returns></returns>
+        public static X509Certificate2 SelectCertFromStore(StoreName store, StoreLocation location, string windowTitle = "", string windowMsg = "")
         {
             X509Certificate2 certSelected = null;
             X509Store x509Store = new X509Store(store, location);

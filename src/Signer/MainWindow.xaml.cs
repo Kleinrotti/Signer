@@ -48,7 +48,13 @@ namespace Signer
             changeToProgressUI();
             try
             {
-                t = await Helpers.ScanDirectory(folder, po, progressBarSigned);
+                t = await Helpers.ScanDirectory(folder, po, progressChanged);
+
+                void progressChanged(int total, int current)
+                {
+                    progressBarSigned.Dispatcher.Invoke(new Action(() => { progressBarSigned.Maximum = total; }));
+                    progressBarSigned.Dispatcher.Invoke(new Action(() => { progressBarSigned.Value = current; }));
+                }
             }
             catch (OperationCanceledException)
             {
@@ -113,16 +119,22 @@ namespace Signer
             tokenSource = new CancellationTokenSource();
             po.CancellationToken = tokenSource.Token;
             changeToProgressUI();
-            int count;
+            Tuple<int, int, int> count;
             try
             {
                 if (useThumbprint)
-                    count = await Helpers.SignWithStore(certificate, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value,
-                        HashAlgorithm, TimestampHashAlgorithm, TimestampType, progressBarSigned, po);
+                    count = await Helpers.SignWithStore(certificate, FileModel.Files, progressChanged, po, checkBoxIncludeSigned.IsChecked.Value,
+                        HashAlgorithm, TimestampHashAlgorithm, TimestampType);
                 else
-                    count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, checkBoxIncludeSigned.IsChecked.Value,
-                        HashAlgorithm, TimestampHashAlgorithm, TimestampType, progressBarSigned, po);
-                System.Windows.MessageBox.Show($"Signed {count} files.");
+                    count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, progressChanged, po, checkBoxIncludeSigned.IsChecked.Value,
+                        HashAlgorithm, TimestampHashAlgorithm, TimestampType);
+
+                void progressChanged(int total, int current)
+                {
+                    progressBarSigned.Dispatcher.Invoke(new Action(() => { progressBarSigned.Maximum = total; }));
+                    progressBarSigned.Dispatcher.Invoke(new Action(() => { progressBarSigned.Value = current; }));
+                }
+                System.Windows.MessageBox.Show($"Signed {count.Item1} files\nSkipped {count.Item2} files\nFailed {count.Item3} files");
             }
             catch (Exception ex)
             {
