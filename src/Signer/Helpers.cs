@@ -36,7 +36,7 @@ namespace Signer
         /// </summary>
         /// <param name="folder">Folder path</param>
         /// <param name="parallelOptions"><see cref="ParallelOptions"/> set your cancellation token here.</param>
-        /// <param name="progressCallback">Callback function to obtain the current process progress.</param>
+        /// <param name="progressCallback">Callback function to obtain the current process progress. Set to <see cref="null"/> if you don't want a callback.</param>
         /// <returns></returns>
         public static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, Action<int, int> progressCallback)
         {
@@ -58,7 +58,8 @@ namespace Signer
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
                     fileObjects.Add(InspectFile(file));
-                    progressCallback(fileCount, progressCount++);
+                    if (progressCallback != null)
+                        progressCallback(fileCount, progressCount++);
                 });
             });
             await task;
@@ -121,7 +122,7 @@ namespace Signer
         /// <param name="certPath">Full path to the certificate.</param>
         /// <param name="passphrase">Passphrase of the certificate.</param>
         /// <param name="files"></param>
-        /// <param name="progressCallback">Callback function to obtain the current process progress.</param>
+        /// <param name="progressCallback">Callback function to obtain the current process progress. Set to <see cref="null"/> if you don't want a callback.</param>
         /// <param name="parallelOptions"><see cref="ParallelOptions"/> set your cancellation token here.</param>
         /// <param name="includeSigned">Deteremine wether you want to override a signature of an already signed file.</param>
         /// <param name="hash">Hash algorithm to use.</param>
@@ -153,7 +154,8 @@ namespace Signer
                     catch (Exception) { failed++; }
                     finally
                     {
-                        progressCallback(files.Count, count++);
+                        if (progressCallback != null)
+                            progressCallback(files.Count, count++);
                     }
                 });
             });
@@ -166,7 +168,7 @@ namespace Signer
         /// </summary>
         /// <param name="thumbprint">Thumbprint from your certificate in your operating system store.</param>
         /// <param name="files"></param>
-        /// <param name="progressCallback">Callback function to obtain the current process progress.</param>
+        /// <param name="progressCallback">Callback function to obtain the current process progress. Set to <see cref="null"/> if you don't want a callback.</param>
         /// <param name="parallelOptions"><see cref="ParallelOptions"/> set your cancellation token here.</param>
         /// <param name="includeSigned">Deteremine wether you want to override a signature of an already signed file.</param>
         /// <param name="hash">Hash algorithm to use.</param>
@@ -198,7 +200,8 @@ namespace Signer
                     catch (Exception) { failed++; }
                     finally
                     {
-                        progressCallback(files.Count, count++);
+                        if (progressCallback != null)
+                            progressCallback(files.Count, count++);
                     }
                 });
             });
