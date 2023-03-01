@@ -126,7 +126,7 @@ namespace Signer
                     count = await Helpers.SignWithStore(certificate, FileModel.Files, progressChanged, po, checkBoxIncludeSigned.IsChecked.Value,
                         HashAlgorithm, TimestampHashAlgorithm, TimestampType);
                 else
-                    count = await Helpers.SignWithCert(certificate, passphrase, FileModel.Files, progressChanged, po, checkBoxIncludeSigned.IsChecked.Value,
+                    count = await Helpers.SignWithFile(certificate, passphrase, FileModel.Files, progressChanged, po, checkBoxIncludeSigned.IsChecked.Value,
                         HashAlgorithm, TimestampHashAlgorithm, TimestampType);
 
                 void progressChanged(int total, int current)

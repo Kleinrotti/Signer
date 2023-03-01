@@ -128,7 +128,7 @@ namespace Signer
         /// <param name="timestampHash">Hash algorithm to use for the timestamp signiture. Keep in mind, not all servers support all signature types.</param>
         /// <param name="timestampType"></param>
         /// <returns>Returns a <see cref="Tuple"/> which contains successfull files, skipped files and failed files.</returns>
-        public static async Task<Tuple<int, int, int>> SignWithCert(string certPath, string passphrase, List<FileObject> files, Action<int, int> progressCallback, ParallelOptions parallelOptions, bool includeSigned = false, Hash hash = Hash.SHA256,
+        public static async Task<Tuple<int, int, int>> SignWithFile(string certPath, string passphrase, List<FileObject> files, Action<int, int> progressCallback, ParallelOptions parallelOptions, bool includeSigned = false, Hash hash = Hash.SHA256,
             TimestampHash timestampHash = TimestampHash.SHA256, TimestampType timestampType = TimestampType.RFC3161)
         {
             int count = 0;
