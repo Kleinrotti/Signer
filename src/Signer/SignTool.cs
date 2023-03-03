@@ -318,7 +318,7 @@ namespace Signer
                 return IntPtr.Zero;
             }
 
-            ICspAsymmetricAlgorithm key = (ICspAsymmetricAlgorithm)cert.PrivateKey;
+            var key = cert.GetRSAPrivateKey() as RSACryptoServiceProvider;
             const int PVK_TYPE_KEYCONTAINER = 2;
 
             if (key == null)
