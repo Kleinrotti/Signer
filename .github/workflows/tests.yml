@@ -5,7 +5,6 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -22,11 +21,15 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/Signer.Tests/Signer.Tests.csproj
     
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
+    - name: Decode test pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.PFX_TEST_CERTIFICATE }}")
-        [IO.File]::WriteAllBytes("Signer_TemporaryKey.pfx", $pfx_cert_byte)
+        [IO.File]::WriteAllBytes("${{ github.workspace }}/Signer_TemporaryKey.pfx", $pfx_cert_byte)
+        
+    - name: import test pfx
+      run: |
+        Import-PfxCertificate -FilePath ${{ github.workspace }}/Signer_TemporaryKey.pfx -CertStoreLocation Cert:\CurrentUser\My -Password "12345"
+      
     
     # Execute all unit tests in the solution
     - name: Execute unit tests
@@ -35,4 +38,4 @@ jobs:
 
     # Remove the pfx
     - name: Remove the pfx
-      run: Remove-Item -path Signer_TemporaryKey.pfx
+      run: Remove-Item -path ${{ github.workspace }}/Signer_TemporaryKey.pfx
