@@ -20,7 +20,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore src/Signer.Tests/SignerTests.csproj
+      run: dotnet restore src/Signer.Tests/Signer.Tests.csproj
     
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
