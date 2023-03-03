@@ -1,0 +1,38 @@
+name: run tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout Code     
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore src/Signer.Tests/SignerTests.csproj
+    
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.PFX_TEST_CERTIFICATE }}")
+        [IO.File]::WriteAllBytes("Signer_TemporaryKey.pfx", $pfx_cert_byte)
+    
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      run: dotnet test src/Signer.Tests/Signer.Tests.csproj
+
+
+    # Remove the pfx
+    - name: Remove the pfx
+      run: Remove-Item -path Signer_TemporaryKey.pfx
