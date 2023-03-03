@@ -28,7 +28,7 @@ jobs:
         
     - name: import test pfx
       run: |
-        Import-PfxCertificate -FilePath ${{ github.workspace }}/Signer_TemporaryKey.pfx -CertStoreLocation Cert:\CurrentUser\My -Password ${{ secrets.PFX_TEST_PASSWORD }}
+        Import-PfxCertificate -FilePath ${{ github.workspace }}/Signer_TemporaryKey.pfx -CertStoreLocation Cert:\CurrentUser\My -Password '${{ secrets.PFX_TEST_PASSWORD }}'
       
     
     # Execute all unit tests in the solution
