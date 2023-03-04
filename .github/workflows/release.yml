@@ -26,13 +26,15 @@ jobs:
         dotnet-version: 6.0.x
         
     - name: set assembly version
+      env:
+       VERSION: ${{ env.RELEASE_VERSION }}
       run: |
        $file = 'src\Signer\Properties\AssemblyInfo.cs'
        $find = '[assembly: AssemblyVersion("0.0.0")]'
-       $replace = '[assembly: AssemblyVersion("${{ env.RELEASE_VERSION }}")]'
+       $replace = '[assembly: AssemblyVersion("$VERSION")]'
        (Get-Content $file).replace($find, $replace) | Set-Content $file
        $find = '[assembly: AssemblyFileVersion("0.0.0")]'
-       $replace = '[assembly: AssemblyFileVersion("${{ env.RELEASE_VERSION }}")]'
+       $replace = '[assembly: AssemblyFileVersion("$VERSION")]'
        (Get-Content $file).replace($find, $replace) | Set-Content $file
         
     - name: Restore dependencies
