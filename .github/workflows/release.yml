@@ -36,16 +36,21 @@ jobs:
     
     - name: Build windows-x86
       run: dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x86
+      
+    - name: compress files
+      run: |
+       Compress-Archive src/Signer/bin/publish-win-x64/Signer.exe src/Signer/bin/publish-win-x64/Signer-win-x64-${{github.ref_name}}.zip
+       Compress-Archive src/Signer/bin/publish-win-x86/Signer.exe src/Signer/bin/publish-win-x86/Signer-win-x86-${{github.ref_name}}.zip
     
     - uses: actions/upload-artifact@v3
       with:
-        path: src/Signer/bin/publish-win-x64/Signer.exe
-        name: Signer-win-x64-${{github.ref_name}}.exe
+        path: src/Signer/bin/publish-win-x64/Signer-win-x64-${{github.ref_name}}.zip
+        name: Signer-win-x64-${{github.ref_name}}.zip
     
     - uses: actions/upload-artifact@v3
       with:
-        path: src/Signer/bin/publish-win-x86/Signer.exe
-        name: Signer-win-x86-${{github.ref_name}}.exe
+        path: src/Signer/bin/publish-win-x86/Signer-win-x86-${{github.ref_name}}.zip
+        name: Signer-win-x86-${{github.ref_name}}.zip
 
   release:
     needs: build
@@ -54,11 +59,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
-          name: Signer-win-x64-${{github.ref_name}}.exe
+          name: Signer-win-x64-${{github.ref_name}}.zip
           
       - uses: actions/download-artifact@v3
         with:
-          name: Signer-win-x86-${{github.ref_name}}.exe
+          name: Signer-win-x86-${{github.ref_name}}.zip
           
       - name: Release files
         uses: softprops/action-gh-release@v1
@@ -66,5 +71,5 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            Signer-win-x64-${{github.ref_name}}.exe
-            Signer-win-x86-${{github.ref_name}}.exe
+            Signer-win-x64-${{github.ref_name}}.zip
+            Signer-win-x86-${{github.ref_name}}.zip
