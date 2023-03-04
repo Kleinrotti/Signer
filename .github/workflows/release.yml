@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "*.*.*"
+      
+env:
+ RELEASE_VERSION: ${GITHUB_REF#refs/*/}
 
 jobs:
   tests:
@@ -15,10 +18,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3    
-    - name: Set version env
-      run: |
-       echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $env:GITHUB_ENV
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -29,9 +28,9 @@ jobs:
         
     - name: set assembly version
       run: |
-       $file = 'src\Signer\Properties\AssemblyInfo.cs'
-       $find = '0.0.0'
-       $replace = '${GITHUB_REF#refs/*/}'
+       $file = "src\Signer\Properties\AssemblyInfo.cs"
+       $find = "0.0.0"
+       $replace = "${{ env.RELEASE_VERSION }}"
        (Get-Content $file).replace($find, $replace) | Set-Content $file
     
     - name: Build windows-x64
@@ -43,21 +42,18 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x64/Signer.exe
-        name: Signer-win-x64-${GITHUB_REF#refs/*/}.exe
+        name: Signer-win-x64-${{ env.RELEASE_VERSION }}.exe
     
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x86/Signer.exe
-        name: Signer-win-x86-${GITHUB_REF#refs/*/}.exe
+        name: Signer-win-x86-${{ env.RELEASE_VERSION }}.exe
 
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set version env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      
       - uses: actions/download-artifact@v3
         with:
           name: Signer-win-x64-${{ env.RELEASE_VERSION }}.exe
