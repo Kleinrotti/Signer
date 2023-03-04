@@ -19,7 +19,7 @@ jobs:
     - name: Set version env
       run: |
        chcp 65001
-       echo "RELEASE_VERSION=${{ env:GITHUB_REF#refs/*/ }}" >> $env:GITHUB_ENV
+       echo "RELEASE_VERSION=${env:GITHUB_REF#refs/*/}" >> $env:GITHUB_ENV
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
