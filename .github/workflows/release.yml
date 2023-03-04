@@ -36,21 +36,16 @@ jobs:
     
     - name: Build windows-x86
       run: dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x86
-      
-    - name: zip files
-      run: |
-        Compress-Archive src/Signer/bin/publish-win-x64/Signer.exe src/Signer/bin/publish-win-x64/Signer.zip
-        Compress-Archive src/Signer/bin/publish-win-x86/Signer.exe src/Signer/bin/publish-win-x86/Signer.zip
     
     - uses: actions/upload-artifact@v3
       with:
-        path: src/Signer/bin/publish-win-x64/Signer.zip
-        name: Signer-win-x64-${{github.ref_name}}.exe
+        path: src/Signer/bin/publish-win-x64/Signer.exe
+        name: Signer-win-x64-${{github.ref_name}}.zip
     
     - uses: actions/upload-artifact@v3
       with:
-        path: src/Signer/bin/publish-win-x86/Signer.zip
-        name: Signer-win-x86-${{github.ref_name}}.exe
+        path: src/Signer/bin/publish-win-x86/Signer.exe
+        name: Signer-win-x86-${{github.ref_name}}.zip
 
   release:
     needs: build
