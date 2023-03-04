@@ -31,7 +31,7 @@ jobs:
       run: |
        $file = 'src\Signer\Properties\AssemblyInfo.cs'
        $find = '0.0.0'
-       $replace = '${{ env.RELEASE_VERSION }}'
+       $replace = '${GITHUB_REF#refs/*/}'
        (Get-Content $file).replace($find, $replace) | Set-Content $file
     
     - name: Build windows-x64
@@ -43,12 +43,12 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x64/Signer.exe
-        name: Signer-win-x64-${{ env.RELEASE_VERSION }}.exe
+        name: Signer-win-x64-${GITHUB_REF#refs/*/}.exe
     
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x86/Signer.exe
-        name: Signer-win-x86-${{ env.RELEASE_VERSION }}.exe
+        name: Signer-win-x86-${GITHUB_REF#refs/*/}.exe
 
   release:
     needs: build
