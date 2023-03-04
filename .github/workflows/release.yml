@@ -30,11 +30,8 @@ jobs:
     - name: set assembly version
       run: |
        $file = 'src\Signer\Properties\AssemblyInfo.cs'
-       $find = '[assembly: AssemblyVersion("0.0.0")]'
-       $replace = '[assembly: AssemblyVersion("${{ env.RELEASE_VERSION }}")]'
-       (Get-Content $file).replace($find, $replace) | Set-Content $file
-       $find = '[assembly: AssemblyFileVersion("0.0.0")]'
-       $replace = '[assembly: AssemblyFileVersion("${{ env.RELEASE_VERSION }}")]'
+       $find = '0.0.0'
+       $replace = ${{ env.RELEASE_VERSION }}
        (Get-Content $file).replace($find, $replace) | Set-Content $file
     
     - name: Build windows-x64
