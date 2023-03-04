@@ -40,12 +40,12 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x64/Signer.exe
-        name: Signer-win-x64-${{github.ref_name}}.zip
+        name: Signer-win-x64-${{github.ref_name}}
     
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x86/Signer.exe
-        name: Signer-win-x86-${{github.ref_name}}.zip
+        name: Signer-win-x86-${{github.ref_name}}
 
   release:
     needs: build
