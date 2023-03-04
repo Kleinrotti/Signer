@@ -39,10 +39,8 @@ jobs:
       
     - name: zip files
       run: |
-        cd src/Signer/bin/publish-win-x64
-        Compress-Archive Signer.exe Signer.zip
-        cd src/Signer/bin/publish-win-x86
-        Compress-Archive Signer.exe Signer.zip
+        Compress-Archive src/Signer/bin/publish-win-x64/Signer.exe src/Signer/bin/publish-win-x64/Signer.zip
+        Compress-Archive src/Signer/bin/publish-win-x86/Signer.exe src/Signer/bin/publish-win-x86/Signer.zip
     
     - uses: actions/upload-artifact@v3
       with:
