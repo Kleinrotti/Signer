@@ -16,10 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set version env
-      run: |
-       chcp 65001
-       echo "RELEASE_VERSION=${env:GITHUB_REF#refs/*/}" >> $env:GITHUB_ENV
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -32,7 +28,7 @@ jobs:
       run: |
        $file = "src\Signer\Properties\AssemblyInfo.cs"
        $find = "0.0.0"
-       $replace = "${{ env.RELEASE_VERSION }}"
+       $replace = "${{github.ref_name}}"
        (Get-Content $file).replace($find, $replace) | Set-Content $file
     
     - name: Build windows-x64
@@ -44,27 +40,25 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x64/Signer.exe
-        name: Signer-win-x64-${{ env.RELEASE_VERSION }}.exe
+        name: Signer-win-x64-${{github.ref_name}}.exe
     
     - uses: actions/upload-artifact@v3
       with:
         path: src/Signer/bin/publish-win-x86/Signer.exe
-        name: Signer-win-x86-${{ env.RELEASE_VERSION }}.exe
+        name: Signer-win-x86-${{github.ref_name}}.exe
 
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set version env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - uses: actions/download-artifact@v3
         with:
-          name: Signer-win-x64-${{ env.RELEASE_VERSION }}.exe
+          name: Signer-win-x64-${{github.ref_name}}.exe
           
       - uses: actions/download-artifact@v3
         with:
-          name: Signer-win-x86-${{ env.RELEASE_VERSION }}.exe
+          name: Signer-win-x86-${{github.ref_name}}.exe
           
       - name: Release files
         uses: softprops/action-gh-release@v1
@@ -72,5 +66,5 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            Signer-win-x64-${{ env.RELEASE_VERSION }}.exe
-            Signer-win-x86-${{ env.RELEASE_VERSION }}.exe
+            Signer-win-x64-${{github.ref_name}}.exe
+            Signer-win-x86-${{github.ref_name}}.exe
