@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v3    
     - name: Set version env
       run: |
-       echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" | Out-File -FilePath $env:GITHUB_ENV -Append 
+       echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $env:GITHUB_ENV
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
