@@ -16,15 +16,14 @@ Utility to bulk sign files with a certificate (pfx) or with a certificate which 
 
 ## Supported file types
 
-- .CAB, PE formats (.EXE, .DLL, etc) , .CAT, .MSI,.OCX, .PS1, .PSM1, .PSD1, .PS1XML, .PSC1, .BAT
+- .CAB, PE formats (.EXE, .DLL, etc) , .CAT, .MSI,.OCX, .PS1, .PSM1, .PSD1, .PS1XML, .PSC1
 
 ## Requirements
 
 - Windows 8/Server 2012 or higher
-- .NET 4.8
+- .NET 6 runtime
 
 
 ### Possible new features in the future
 
 - Support for other files like .pdf or .jar
-- Linux support
