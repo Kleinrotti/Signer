@@ -9,9 +9,13 @@ using Xunit;
 
 namespace Signer.Tests
 {
-    public class SigningTest
+    public class SigningTest : IDisposable
     {
         private static string _currentDir = Directory.GetParent("..\\..\\..\\..\\..\\").FullName;
+        public SigningTest()
+        {
+            File.WriteAllText(_currentDir + "\\test_signed_file.ps1", "Test");
+        }
 
         [Theory]
         [InlineData(Hash.SHA1, "SHA1")]
@@ -20,13 +24,12 @@ namespace Signer.Tests
         [InlineData(Hash.SHA512, "SHA512")]
         public async void SignWithStoreHashTest(Hash hash, string expectedHash)
         {
-            var currentDir = Directory.GetParent("..\\..\\..\\..\\..\\").FullName;
-            var fileList = new List<FileObject>() { await Helpers.ScanFile(currentDir + "\\test_signed_file.ps1") };
+            var fileList = new List<FileObject>() { await Helpers.ScanFile(_currentDir + "\\test_signed_file.ps1") };
             Assert.NotEmpty(fileList);
             var result = await Helpers.SignWithStore("49167e096028b922f326d5c098a19d914cf5d8f0", fileList, null, new ParallelOptions(), true, hash);
             Assert.Equal(new Tuple<int, int, int>(1, 0, 0), result);
 
-            var file = await Helpers.ScanFile(currentDir + "\\test_signed_file.ps1");
+            var file = await Helpers.ScanFile(_currentDir + "\\test_signed_file.ps1");
             Assert.Equal(expectedHash, file.Signatures.First().DigestAlgorithmName.Name);
         }
 
@@ -81,6 +84,11 @@ namespace Signer.Tests
             var fileList = new List<FileObject>() { await Helpers.ScanFile(_currentDir + "\\test_signed_file.ps1") };
             Assert.NotEmpty(fileList);
             return fileList;
+        }
+
+        public void Dispose()
+        {
+            File.Delete(_currentDir + "\\test_signed_file.ps1");
         }
     }
 }
