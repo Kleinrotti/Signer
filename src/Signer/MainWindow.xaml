@@ -64,7 +64,7 @@
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Path}" Header="Path" Width="150" />
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Filename" Width="180" />
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Signed}" Header="Signed" Width="Auto" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Trusted}" Header="Trusted" Width="Auto" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Valid}" Header="Valid" />
                     </GridView>
                 </ListView.View>
                 <ListView.ContextMenu>

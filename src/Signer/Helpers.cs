@@ -41,19 +41,20 @@ namespace Signer
         public static async Task<List<FileObject>> ScanDirectory(string folder, ParallelOptions parallelOptions, Action<int, int> progressCallback)
         {
             var fileObjects = new ConcurrentBag<FileObject>();
-            var task = Task.Run(() =>
+            var fileCount = 0;
+            await Task.Run(() =>
             {
                 IEnumerable<string> files = null;
                 try
                 {
                     files = SearchFiles(folder, FileSearchPattern);
+                    fileCount = files.Count();
                 }
                 catch (UnauthorizedAccessException ex)
                 {
                     System.Windows.MessageBox.Show(ex.Message);
                     return;
                 }
-                var fileCount = files.Count();
                 var progressCount = 0;
                 Parallel.ForEach(files, parallelOptions, file =>
                 {
@@ -62,7 +63,6 @@ namespace Signer
                         progressCallback(fileCount, progressCount++);
                 });
             });
-            await task;
             return fileObjects.ToList();
         }
 
@@ -86,7 +86,7 @@ namespace Signer
                 Name = Path.GetFileName(file),
                 Path = Path.GetDirectoryName(file)
             };
-            obj.Signed = Signed(file, ref obj);
+            CheckSigned(ref obj);
             return obj;
         }
 
@@ -99,21 +99,27 @@ namespace Signer
                     );
         }
 
-        private static bool Signed(string path, ref FileObject fileObject)
+        private static void CheckSigned(ref FileObject fileObject)
         {
-            var inspector = new FileInspector(path);
+            var inspector = new FileInspector(fileObject.FullPath);
             var result = inspector.Validate();
-            if (result == SignatureCheckResult.Valid || result == SignatureCheckResult.UntrustedRoot)
+            if (result == SignatureCheckResult.Valid)
             {
-                fileObject.Signatures = inspector.GetSignatures();
-                if (result == SignatureCheckResult.UntrustedRoot)
-                    fileObject.Trusted = false;
-                else
-                    fileObject.Trusted = true;
-                return true;
+                fileObject.Signed = true;
+                fileObject.Valid = true;
+            }
+            else if (result == SignatureCheckResult.NoSignature)
+            {
+                fileObject.Signed = false;
+                fileObject.Valid = false;
+                return;
             }
             else
-                return false;
+            {
+                fileObject.Signed = true;
+                fileObject.Valid = false;
+            }
+            fileObject.Signatures = inspector.GetSignatures();
         }
 
         /// <summary>

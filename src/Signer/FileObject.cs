@@ -7,7 +7,7 @@ namespace Signer
     {
         public string Name { get; set; }
         public string Path { get; set; }
-        public bool Trusted { get; set; }
+        public bool Valid { get; set; }
 
         public string FullPath
         {
