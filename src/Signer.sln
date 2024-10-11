@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signer", "Signer\Signer.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signer.Tests", "Signer.Tests\Signer.Tests.csproj", "{77708357-20A0-497C-8B70-D9569E7C0BB6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticodeExaminer", "AuthenticodeExaminer\AuthenticodeExaminer.csproj", "{0D809F28-E280-4177-9C80-E66F3221419E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticodeExaminer.Tests", "AuthenticodeExaminer.Tests\AuthenticodeExaminer.Tests.csproj", "{1CEB73C3-6BF5-4568-9FC3-FCE522F99147}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{77708357-20A0-497C-8B70-D9569E7C0BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77708357-20A0-497C-8B70-D9569E7C0BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77708357-20A0-497C-8B70-D9569E7C0BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D809F28-E280-4177-9C80-E66F3221419E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D809F28-E280-4177-9C80-E66F3221419E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D809F28-E280-4177-9C80-E66F3221419E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D809F28-E280-4177-9C80-E66F3221419E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CEB73C3-6BF5-4568-9FC3-FCE522F99147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CEB73C3-6BF5-4568-9FC3-FCE522F99147}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CEB73C3-6BF5-4568-9FC3-FCE522F99147}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CEB73C3-6BF5-4568-9FC3-FCE522F99147}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
