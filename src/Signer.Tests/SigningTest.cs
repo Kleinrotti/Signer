@@ -22,11 +22,11 @@ namespace Signer.Tests
         [InlineData(Hash.SHA256, "SHA256")]
         [InlineData(Hash.SHA384, "SHA384")]
         [InlineData(Hash.SHA512, "SHA512")]
-        public async void SignWithStoreHashTest(Hash hash, string expectedHash)
+        public async Task SignWithStoreHashTest(Hash hash, string expectedHash)
         {
             var fileList = new List<FileObject>() { await Helpers.ScanFile(_currentDir + "\\test_signed_file.ps1") };
             Assert.NotEmpty(fileList);
-            var result = await Helpers.SignWithStore("49167e096028b922f326d5c098a19d914cf5d8f0", fileList, null, new ParallelOptions(), true, hash);
+            var result = await Helpers.SignWithStore("7174e534f146c1e21a2d2171fca803511c9a0481", fileList, null, new ParallelOptions(), true, hash);
             Assert.Equal(new Tuple<int, int, int>(1, 0, 0), result);
 
             var file = await Helpers.ScanFile(_currentDir + "\\test_signed_file.ps1");
@@ -38,7 +38,7 @@ namespace Signer.Tests
         [InlineData(Hash.SHA256, "SHA256")]
         [InlineData(Hash.SHA384, "SHA384")]
         [InlineData(Hash.SHA512, "SHA512")]
-        public async void SignWithFileHashTest(Hash hash, string expectedHash)
+        public async Task SignWithFileHashTest(Hash hash, string expectedHash)
         {
             var fileList = await GetFile();
             var result = await Helpers.SignWithFile(_currentDir + "\\Signer_TemporaryKey.pfx", "12345", fileList, null, new ParallelOptions(), true, hash);
@@ -52,7 +52,7 @@ namespace Signer.Tests
         [InlineData(TimestampHash.SHA256, "SHA256")]
         [InlineData(TimestampHash.SHA384, "SHA384")]
         [InlineData(TimestampHash.SHA512, "SHA512")]
-        public async void SignWithTimestampHashTest(TimestampHash timestampHash, string expectedHash)
+        public async Task SignWithTimestampHashTest(TimestampHash timestampHash, string expectedHash)
         {
             var fileList = await GetFile();
             var result = await Helpers.SignWithFile(_currentDir + "\\Signer_TemporaryKey.pfx", "12345", fileList, null, new ParallelOptions(), true, Hash.SHA256, timestampHash);
@@ -65,7 +65,7 @@ namespace Signer.Tests
         [Theory]
         [InlineData(TimestampType.Authenticode, SignatureKind.AuthenticodeTimestamp)]
         [InlineData(TimestampType.RFC3161, SignatureKind.Rfc3161Timestamp)]
-        public async void SignWithTimestampTypeTest(TimestampType timestampType, SignatureKind expectedType)
+        public async Task SignWithTimestampTypeTest(TimestampType timestampType, SignatureKind expectedType)
         {
             var fileList = await GetFile();
             var result = await Helpers.SignWithFile(_currentDir + "\\Signer_TemporaryKey.pfx", "12345", fileList, null, new ParallelOptions(), true, Hash.SHA256, TimestampHash.SHA256, timestampType);
