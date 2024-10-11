@@ -22,8 +22,3 @@ Utility to bulk sign files with a certificate (pfx) or with a certificate which 
 
 - Windows 8/Server 2012 or higher
 - .NET 6 runtime
-
-
-### Possible new features in the future
-
-- Support for other files like .pdf or .jar
