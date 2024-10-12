@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
         
     - name: Restore dependencies
       run: dotnet restore src/Signer/Signer.csproj
@@ -32,10 +32,14 @@ jobs:
        (Get-Content $file).replace($find, $replace) | Set-Content $file
     
     - name: Build windows-x64
-      run: dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x64
+      run: |
+       dotnet publish src/AuthenticodeExaminer/AuthenticodeExaminer.csproj -p:PublishProfile=win-x64
+       dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x64
     
     - name: Build windows-x86
-      run: dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x86
+      run: |
+       dotnet publish src/AuthenticodeExaminer/AuthenticodeExaminer.csproj -p:PublishProfile=win-x86
+       dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x86
       
     - name: compress files
       run: |

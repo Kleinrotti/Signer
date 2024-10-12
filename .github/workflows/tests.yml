@@ -18,9 +18,11 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore src/Signer.Tests/Signer.Tests.csproj
+      run: |
+       dotnet restore src/AuthenticodeExaminer/AuthenticodeExaminer.Tests.csproj
+       dotnet restore src/Signer.Tests/Signer.Tests.csproj
     
     - name: Decode test pfx
       run: |
@@ -35,7 +37,9 @@ jobs:
     
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test src/Signer.Tests/Signer.Tests.csproj
+      run: |
+       dotent test src/AuthenticodeExaminer/AuthenticodeExaminer.Tests.csproj
+       dotnet test src/Signer.Tests/Signer.Tests.csproj
 
 
     # Remove the pfx
