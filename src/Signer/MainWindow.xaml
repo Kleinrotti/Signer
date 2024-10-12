@@ -66,7 +66,7 @@
             <ListView Name="listViewItems" Grid.Row="0" ItemsSource="{Binding Files}" MinWidth="400" MinHeight="340" IsEnabled="False" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1">
                 <ListView.View>
                     <GridView AllowsColumnReorder="true">
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Path}" Header="Path" Width="150"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Path}" Header="Path" Width="180"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Filename" Width="150"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Signed}" Header="Signed" />
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Valid}" Header="Valid" />

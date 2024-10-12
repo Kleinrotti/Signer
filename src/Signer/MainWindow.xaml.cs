@@ -85,7 +85,7 @@ namespace Signer
             var openFileDialog = new OpenFileDialog
             {
                 Title = "Select a file to sign.",
-                Filter = "Script|*.ps1|Binary files|*.exe;*.dll;*.appx|Archive|*.cab|Catalog|*.cat|All |*.*"
+                Filter = "Binary files|*.exe;*.dll|Script|*.ps1|Archive|*.cab|Catalog|*.cat|All |*.*"
             };
             if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
