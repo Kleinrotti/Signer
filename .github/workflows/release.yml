@@ -33,12 +33,10 @@ jobs:
     
     - name: Build windows-x64
       run: |
-       dotnet publish src/AuthenticodeExaminer/AuthenticodeExaminer.csproj -p:PublishProfile=win-x64
        dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x64
     
     - name: Build windows-x86
       run: |
-       dotnet publish src/AuthenticodeExaminer/AuthenticodeExaminer.csproj -p:PublishProfile=win-x86
        dotnet publish src/Signer/Signer.csproj -p:PublishProfile=win-x86
       
     - name: compress files
