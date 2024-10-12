@@ -9,16 +9,15 @@
                  xmlns:c="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System"
                  mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanMinimize"
-        Title="Signer" Height="580" Width="520">
-    <Grid Height="Auto" Width="Auto">
+        ResizeMode="CanResize"
+        Title="Signer" Height="580" Width="520" MinHeight="580" MinWidth="520">
+    <Grid Margin="1,1">
         <Grid.Resources>
             <l:ComparisonConverter x:Key="ComparisonConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="460" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
@@ -56,14 +55,20 @@
             </MenuItem>
             <MenuItem Header="_About" Click="MenuItemAbout_Click" />
         </Menu>
-        <TextBlock Text="Sign files" FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" />
-        <StackPanel Name="panelMain" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
-            <ListView Name="listViewItems" ItemsSource="{Binding Files}" Width="445" Height="300" VerticalAlignment="Center" IsEnabled="False" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1">
+        <Grid Name="gridMain" Margin="20,20" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView Name="listViewItems" Grid.Row="0" ItemsSource="{Binding Files}" MinWidth="400" MinHeight="340" IsEnabled="False" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1">
                 <ListView.View>
                     <GridView AllowsColumnReorder="true">
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Path}" Header="Path" Width="150" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Filename" Width="180" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Signed}" Header="Signed" Width="Auto" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Path}" Header="Path" Width="150"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Filename" Width="150"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Signed}" Header="Signed" />
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Valid}" Header="Valid" />
                     </GridView>
                 </ListView.View>
@@ -78,33 +83,42 @@
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <WrapPanel Name="wrapPanelSelect">
-                <Button Name="buttonSelectFolder"  Height="40" Width="223" Click="buttonSelectFolder_Click">
-                    <iconPacks:PackIconMaterial Width="25"
-                                  Height="25"
+            <Grid Name="gridPanelSelect" Grid.Row="1" Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="1" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Name="buttonSelectFolder" Grid.Column="0" MinHeight="40" Click="buttonSelectFolder_Click">
+                    <iconPacks:PackIconMaterial MinWidth="25"
+                                  MinHeight="25"
                                   Kind="Folder" />
                 </Button>
-                <Button Name="buttonSelectFile" Height="40" Width="222" Click="buttonSelectFile_Click">
-                    <iconPacks:PackIconMaterial Width="25"
-                                  Height="25"
+                <Button Name="buttonSelectFile" Grid.Column="2" MinHeight="40" Click="buttonSelectFile_Click">
+                    <iconPacks:PackIconMaterial MinWidth="25"
+                                  MinHeight="25"
                                   Kind="File" />
                 </Button>
-            </WrapPanel>
-            <Button Name="buttonStartSign" Content="Sign files" Height="40" Click="buttonStartSign_Click" Visibility="Hidden" />
-            <Button Name="buttonCancel" Content="Cancel" Height="40" Click="buttonCancel_Click" Visibility="Hidden"/>
-            <CheckBox Name="checkBoxIncludeSigned" Content="Include already signed files" Visibility="Hidden" />
-        </StackPanel>
-        <StackPanel Grid.Row="3">
-            <Grid Name="gridProgress" Visibility="Hidden">
-                <ProgressBar Minimum="0"
-                Maximum="100"
-                Height="25"
-                Value="{Binding InsertBindingHere}"
-                Name="progressBarSigned" />
-                <TextBlock Text="{Binding ElementName=progressBarSigned, Path=Value, StringFormat={}{0:0} files}"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center" />
             </Grid>
-        </StackPanel>
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Name="buttonStartSign" Content="Sign files" MinHeight="40" Click="buttonStartSign_Click" Visibility="Hidden" />
+                <Button Grid.Row="0" Name="buttonCancel" Content="Cancel" MinHeight="40" Click="buttonCancel_Click" Visibility="Hidden" />
+                <CheckBox Grid.Row="1" Margin="0,2"  Name="checkBoxIncludeSigned" Content="Include already signed files" Visibility="Hidden" />
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" Name="gridProgress" Visibility="Hidden">
+            <ProgressBar Minimum="0"
+                Maximum="100"
+                Margin="2"
+                MinHeight="25"
+                Name="progressBarSigned" />
+            <TextBlock Text="{Binding ElementName=progressBarSigned, Path=Value, StringFormat={}{0:0} files}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+        </Grid>
     </Grid>
 </mah:MetroWindow>

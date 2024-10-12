@@ -9,49 +9,44 @@
         WindowStyle="ToolWindow"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Title="" Height="270" Width="390">
-    <Grid Height="200" Width="350">
+        Title="" Height="250" Width="390">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Margin="20,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border BorderThickness="2" Grid.Column="0">
-                <StackPanel Name="stackPanelCertificateFile">
-                    <TextBlock Name="textBlockCertificate" Text="Select Certificate file" HorizontalAlignment="Center" />
-                    <Button Name="buttonSelect" Click="buttonSelect_Click">
-                        <iconPacks:PackIconMaterial Width="20"
+            <TextBlock Name="textBlockCertificate" Text="From Certificate File" HorizontalAlignment="Center" />
+            <Button Name="buttonSelect" Click="buttonSelect_Click" Grid.Row="1">
+                <iconPacks:PackIconMaterial Width="20"
                                   Height="20"
                                   Kind="FileCertificate" />
-                    </Button>
-                </StackPanel>
-            </Border>
-            <Border BorderThickness="2" Grid.Column="1">
-                <StackPanel Name="stackPanelCertificateStore">
-                    <TextBlock Name="textBlockCertificateStore" Text="Select Certificate store" HorizontalAlignment="Center" />
-                    <Button Name="buttonSelectFromStore" Click="buttonSelectFromStore_Click">
-                        <iconPacks:PackIconMaterial Width="20"
+            </Button>
+            <TextBlock Grid.Column="2" Name="textBlockCertificateStore" Text="From Certificate Store" HorizontalAlignment="Center" />
+            <Button Grid.Column="2" Grid.Row="1"  Name="buttonSelectFromStore" Click="buttonSelectFromStore_Click">
+                <iconPacks:PackIconMaterial Width="20"
                                   Height="20"
                                   Kind="Certificate" />
-                    </Button>
-                </StackPanel>
-            </Border>
+            </Button>
         </Grid>
-        <StackPanel Name="stackPanelPassphrase" Visibility="Hidden" Width="140" Grid.Row="1" Margin="0,30,0,0">
+        <StackPanel Name="stackPanelPassphrase" Visibility="Hidden" Width="180" Grid.Row="1">
             <TextBlock Name="textBlockPassphrase" Text="Passphrase" HorizontalAlignment="Center" />
             <PasswordBox Name="passwordBoxPassphrase" />
         </StackPanel>
-        <StackPanel VerticalAlignment="Bottom" Grid.Row="2">
-            <Button Name="buttonApply" Click="buttonApply_Click" Width="120" Height="35" IsEnabled="False">
-                <iconPacks:PackIconMaterial Width="20"
-                                  Height="20"
-                                  Kind="ContentSaveMoveOutline" />
-            </Button>
-        </StackPanel>
+        <Button Name="buttonApply" Click="buttonApply_Click" Width="120" Height="45" IsEnabled="False" Grid.Row="2">
+            <iconPacks:PackIconMaterial Width="Auto"
+          Height="Auto"
+          Kind="ContentSaveMoveOutline" />
+        </Button>
     </Grid>
 </mah:MetroWindow>

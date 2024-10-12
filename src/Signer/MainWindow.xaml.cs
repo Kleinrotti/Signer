@@ -153,8 +153,8 @@ namespace Signer
 
         private void changeToProgressUI()
         {
-            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            wrapPanelSelect.Visibility = Visibility.Collapsed;
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.AppStarting;
+            gridPanelSelect.Visibility = Visibility.Collapsed;
             buttonStartSign.Visibility = Visibility.Collapsed;
             checkBoxIncludeSigned.Visibility = Visibility.Collapsed;
             buttonCancel.Visibility = Visibility.Visible;
@@ -165,7 +165,7 @@ namespace Signer
         private void changeToScanFinishedUI()
         {
             buttonCancel.Visibility = Visibility.Collapsed;
-            wrapPanelSelect.Visibility = Visibility.Visible;
+            gridPanelSelect.Visibility = Visibility.Visible;
             gridProgress.Visibility = Visibility.Hidden;
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
         }
