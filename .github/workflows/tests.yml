@@ -38,7 +38,7 @@ jobs:
     # Execute all unit tests in the solution
     - name: Execute unit tests
       run: |
-       dotent test src/AuthenticodeExaminer/AuthenticodeExaminer.Tests.csproj
+       dotnet test src/AuthenticodeExaminer/AuthenticodeExaminer.Tests.csproj
        dotnet test src/Signer.Tests/Signer.Tests.csproj
 
 
